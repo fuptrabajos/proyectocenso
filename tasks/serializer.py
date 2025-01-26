@@ -19,6 +19,7 @@ class TblDatPerSerializer(serializers.ModelSerializer):
     class Meta:
         model = TblDatPer
         fields ='__all__'
+        
 
 class TblTiposDeViviendaSerializer(serializers.ModelSerializer):   
     class Meta:

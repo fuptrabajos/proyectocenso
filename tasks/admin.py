@@ -1,14 +1,7 @@
 from django.contrib import admin
-from .models import Task
-from .models import TblTipIdentidad
-from .models import TblDatPer
-from .models import TblTiposDeVivienda
-from .models import TblTiposCultivo
+from .models import Task, TblAfiliacion, TblDatPer, TblTiposDeVivienda, TblTiposCultivo, TblNivelAcademico, TblRegimen, TblDisBasuras,TblTiposServiPubli, TblTipIdentidad
 from .models import TblAfiliacion
-from .models import TblNivelAcademico
-from .models import TblRegimen
-from .models import TblDisBasuras
-from .models import TblTiposServiPubli
+
 
 
 
