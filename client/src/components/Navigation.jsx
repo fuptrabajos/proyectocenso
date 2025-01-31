@@ -50,6 +50,11 @@ export function Navigation() {
                     <button className="bg-indigo-500 px-4 py-2 rounded-lg text-white">
                         <Link to="/Datper-create">Crear Comunero</Link>
                     </button>
+
+                    <button className="bg-indigo-500 px-4 py-2 rounded-lg text-white">
+                        <Link to="/Datper-create">Buscar</Link>
+                    </button>
+
                     <button className="bg-indigo-500 px-4 py-2 rounded-lg text-white">
                         <Link to="/Identidad-create">Crear Tipos de identidad</Link>
                     </button>

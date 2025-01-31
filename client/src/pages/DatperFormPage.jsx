@@ -1,37 +1,37 @@
-import {useForm} from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { useEffect } from "react";
-import {createTblDatPer, deleteTblDatPer, updateTblDatPer , getTblDatPer} from'../api/Datper.api';
-import {useNavigate, useParams} from'react-router-dom';
-import {toast} from'react-hot-toast';
+import { createTblDatPer, deleteTblDatPer, updateTblDatPer, getTblDatPer } from '../api/Datper.api';
+import { useNavigate, useParams } from 'react-router-dom';
+import { toast } from 'react-hot-toast';
 
 export function DatperFormPage() {
-    const{register, handleSubmit, formState: {errors}, setValue} = 
-    
-    useForm();
+    const { register, handleSubmit, formState: { errors }, setValue } =
+
+        useForm();
     const navigate = useNavigate();
-    const params = useParams(); 
+    const params = useParams();
     console.log(params);
-    
+
     const onSubmit = handleSubmit(async data => {
         console.log(data)//verifica los datos antes de enviar
 
-        if(params.id) {
+        if (params.id) {
             await updateTblDatPer(params.id, data)
-            toast.success('Comunero actualizado con exito',{
-                position:"bottom-right",
-                style:{
-                    background:"#101010",
-                    color:"#fff",
+            toast.success('Comunero actualizado con exito', {
+                position: "bottom-right",
+                style: {
+                    background: "#101010",
+                    color: "#fff",
                 }
             })
-            
+
         } else {
             await createTblDatPer(data);
-            toast.success('Comunero creado con exito',{
-                position:"bottom-right",
-                style:{
-                    background:"#101010",
-                    color:"#fff",
+            toast.success('Comunero creado con exito', {
+                position: "bottom-right",
+                style: {
+                    background: "#101010",
+                    color: "#fff",
                 }
             })
         }
@@ -47,7 +47,7 @@ export function DatperFormPage() {
                     data: { tip_iden_usu, identificacion_usuario, nombre_1, nombre_2, apellido_1, apellido_2, fec_nto, lugar_residencia, etnia,
                         resguardo, codigo_eapb, lugar_de_trabajo, nombre_padre, nombre_madre, id_tip_vivienda, tiene_parcela, id_tip_cultivos,
                         nivel_de_academico, estado_civil, regimen, sexo_al_nacer, habla_otra_lenjua, comunidad_de_origen, usa_medicina_tradicional,
-                        cuenta_con_servicios_publico, id_disp_de_las_basuras }
+                        cuenta_con_servicios_publico, id_disp_de_las_basuras, numero_familia }
                 } = await getTblDatPer(params.id);
                 setValue('tip_iden_usu', tip_iden_usu)
                 setValue('identificacion_usuario', identificacion_usuario)
@@ -75,6 +75,7 @@ export function DatperFormPage() {
                 setValue('usa_medicina_tradicional', usa_medicina_tradicional)
                 setValue('cuenta_con_servicios_publico', cuenta_con_servicios_publico)
                 setValue('id_disp_de_las_basuras', id_disp_de_las_basuras)
+                setValue('numero_familia', numero_familia)
 
                 toast.success('Comunero actualizado exitosamente', {
                     position: "bottom-right",
@@ -86,252 +87,157 @@ export function DatperFormPage() {
             }
         }
         loadDatper()
-    }, []) 
-    
+    }, [])
+
     return (
 
-        
 
-        <div className="max-w-xl mx-auto">
-            <form onSubmit={onSubmit}>
 
-                <input
-                   type="text"
-                    placeholder="tip_iden_usu"
-                    {...register("tip_iden_usu", { required: true })}
-                    className="bg-zinc-700 p-3 rounded-lg block e-full mb-3"
-                />
+        <div className="max-w-3xl mx-auto bg-zinc-800 p-6 rounded-lg">
+            <form onSubmit={onSubmit} className="grid grid-cols-1 lg:grid-cols-2 gap-4">
 
-                {errors.tip_iden_usu && <span>Este valor es requerido</span>}
-                
-                <input
 
-                 type="text"
-                 placeholder="identificacion_usuario"
-                 {...register("identificacion_usuario", { required: true })}
-                className="bg-zinc-700 p-3 rounded-lg block e-full mb-3"
-                />
-                {errors.identificacion_usuario  && <span>Este valor es requerido</span>}
+                <input type="text" placeholder="Tipo. Identidad" {...register("tip_iden_usu", { required: true })} className="bg-zinc-700 p-3 rounded-lg" />
+                <input type="text" placeholder="Identificación" {...register("identificacion_usuario", { required: true })} className="bg-zinc-700 p-3 rounded-lg" />
+                <input type="text" placeholder="Primer Nombre" {...register("nombre_1", { required: true })} className="bg-zinc-700 p-3 rounded-lg" />
+                <input type="text" placeholder="Segundo Nombre" {...register("nombre_2")} className="bg-zinc-700 p-3 rounded-lg" />
+                <input type="text" placeholder="Primer Apellido" {...register("apellido_1", { required: true })} className="bg-zinc-700 p-3 rounded-lg" />
+                <input type="text" placeholder="Segundo Apellido" {...register("apellido_2")} className="bg-zinc-700 p-3 rounded-lg" />
+                <input type="date" placeholder="Fecha Nacimiento" {...register("fec_nto", { required: true })} className="bg-zinc-700 p-3 rounded-lg" />
+                <input type="text" placeholder="Lugar Residencia" {...register("lugar_residencia", { required: true })} className="bg-zinc-700 p-3 rounded-lg" />
+                <input type="text" placeholder="Etnia" {...register("etnia", { required: true })} className="bg-zinc-700 p-3 rounded-lg" />
+                <input type="text" placeholder="Resguardo" {...register("resguardo", { required: true })} className="bg-zinc-700 p-3 rounded-lg" />
+                <input type="text" placeholder="Código EAPB" {...register("codigo_eapb")} className="bg-zinc-700 p-3 rounded-lg" />
+                <input type="text" placeholder="Lugar Trabajo" {...register("lugar_de_trabajo")} className="bg-zinc-700 p-3 rounded-lg" />
+                <input type="text" placeholder="Numero familia" {...register("numero_familia")} className="bg-zinc-700 p-3 rounded-lg" />
 
-                <input
-                 type="text"
-                 placeholder="nombre_1"
-                 {...register("nombre_1", { required: true })}
-                 className="bg-zinc-700 p-3 rounded-lg block e-full mb-3"
-                />                             
-                {errors.nombre_1  && <span>Este valor es requerido</span>}  
-                
-                <input
-                 type="text"
-                 placeholder="nombre_2"
-                 {...register("nombre_2", { required: true })}
-                 className="bg-zinc-700 p-3 rounded-lg block e-full mb-3"
-                />                             
-               
-                <input
-                 type="text"
-                 placeholder="apellido_1"
-                 {...register("apellido_1", { required: true })}
-                 className="bg-zinc-700 p-3 rounded-lg block e-full mb-3"
-                />                             
-                {errors.apellido_1   && <span>Este valor es requerido</span>}
+                {/* Campos tipo checkbox */}
+                <div className="flex flex-col space-y-2">
+                    <label className="text-sm font-medium">¿Tiene parcela?</label>
+                    <div className="flex space-x-4">
+                        <label className="flex items-center space-x-2">
+                            <input
+                                type="radio"
+                                value="si"
+                                {...register("Tiene parcela", { required: true })}
+                                className="bg-zinc-700 p-3 rounded-lg"
+                            />
+                            <span>Sí</span>
+                        </label>
+                        <label className="flex items-center space-x-2">
+                            <input
+                                type="radio"
+                                value="no"
+                                {...register("Tiene parcela", { required: true })}
+                                className="bg-zinc-700 p-3 rounded-lg"
+                            />
+                            <span>No</span>
+                        </label>
+                    </div>
+                </div>
 
-                <input
-                 type="text"
-                 placeholder="apellido_2"
-                 {...register("apellido_2", { required: true })}
-                 className="bg-zinc-700 p-3 rounded-lg block e-full mb-3"
-                />                             
-                
+                <div className="flex flex-col space-y-2">
+                    <label className="text-sm font-medium">¿Habla otra lengua?</label>
+                    <div className="flex space-x-4">
+                        <label className="flex items-center space-x-2">
+                            <input
+                                type="radio"
+                                value="si"
+                                {...register("Habla otra lenjua", { required: true })}
+                                className="bg-zinc-700 p-3 rounded-lg"
+                            />
+                            <span>Sí</span>
+                        </label>
+                        <label className="flex items-center space-x-2">
+                            <input
+                                type="radio"
+                                value="no"
+                                {...register("Habla otra lenjua", { required: true })}
+                                className="bg-zinc-700 p-3 rounded-lg"
+                            />
+                            <span>No</span>
+                        </label>
+                    </div>
+                </div>
 
-                <input
-                 type="date"
-                 placeholder="fec_nto"
-                 {...register("fec_nto", { required: true })}
-                 className="bg-zinc-700 p-3 rounded-lg block e-full mb-3"
-                />                             
-                {errors.fec_nto   && <span>Este valor es requerido</span>}
 
-                <input
-                 type="text"
-                 placeholder="lugar_residencia"
-                 {...register("lugar_residencia", { required: true })}
-                 className="bg-zinc-700 p-3 rounded-lg block e-full mb-3"
-                />                             
-                {errors.lugar_residencia   && <span>Este valor es requerido</span>}
+                <div className="flex flex-col space-y-2">
+                    <label className="text-sm font-medium">¿Usa medicina tradicional?</label>
+                    <div className="flex space-x-4">
+                        <label className="flex items-center space-x-2">
+                            <input
+                                type="radio"
+                                value="si"
+                                {...register("usa medicina tradicional", { required: true })}
+                                className="bg-zinc-700 p-3 rounded-lg"
+                            />
+                            <span>Sí</span>
+                        </label>
+                        <label className="flex items-center space-x-2">
+                            <input
+                                type="radio"
+                                value="no"
+                                {...register("usa medicina tradicional", { required: true })}
+                                className="bg-zinc-700 p-3 rounded-lg"
+                            />
+                            <span>No</span>
+                        </label>
+                    </div>
+                </div>
 
-                <input
-                 type="text"
-                 placeholder="etnia"
-                 {...register("etnia", { required: true })}
-                 className="bg-zinc-700 p-3 rounded-lg block e-full mb-3"
-                />                             
-                {errors.etnia  && <span>Este valor es requerido</span>}
+                <div className="flex flex-col space-y-2">
+                    <label className="text-sm font-medium">¿Cuenta con Servicios Públicos?</label>
+                    <div className="flex space-x-4">
+                        <label className="flex items-center space-x-2">
+                            <input
+                                type="radio"
+                                value="si"
+                                {...register("cuenta_con_servicios_publico", { required: true })}
+                                className="bg-zinc-700 p-3 rounded-lg"
+                            />
+                            <span>Sí</span>
+                        </label>
+                        <label className="flex items-center space-x-2">
+                            <input
+                                type="radio"
+                                value="no"
+                                {...register("cuenta_con_servicios_publico", { required: true })}
+                                className="bg-zinc-700 p-3 rounded-lg"
+                            />
+                            <span>No</span>
+                        </label>
+                    </div>
+                </div>
 
-                <input
-                 type="text"
-                 placeholder="resguardo"
-                 {...register("resguardo", { required: true })}
-                 className="bg-zinc-700 p-3 rounded-lg block e-full mb-3"
-                />                             
-                {errors.resguardo   && <span>Este valor es requerido</span>}
+                {/* Botón de envío en toda la fila */}
+                <div className="col-span-1 lg:col-span-2">
+                    <button className="bg-indigo-500 p-3 rounded-lg w-full mt-3">Guardar</button>
+                </div>
 
-                <input
-                 type="text"
-                 placeholder="codigo_eapb"
-                 {...register("codigo_eapb", { required: false })}
-                 className="bg-zinc-700 p-3 rounded-lg block e-full mb-3"
-                />                             
-                {errors.codigo_eapb   && <span>Este valor es requerido</span>}
 
-                <input
-                 type="text"
-                 placeholder="lugar_de_trabajo"
-                 {...register("lugar_de_trabajo", { required: true })}
-                 className="bg-zinc-700 p-3 rounded-lg block e-full mb-3"
-                />                             
-                
-
-                <input
-                 type="text"
-                 placeholder="nombre_padre"
-                 {...register("nombre_padre", { required: true })}
-                 className="bg-zinc-700 p-3 rounded-lg block e-full mb-3"
-                />                             
-                
-
-                <input
-                 type="text"
-                 placeholder="nombre_madre"
-                 {...register("nombre_madre", { required: true })}
-                 className="bg-zinc-700 p-3 rounded-lg block e-full mb-3"
-                />                             
-                
-
-                <input
-                 type="text"
-                 placeholder="id_tip_vivienda"
-                 {...register("id_tip_vivienda", { required: true })}
-                 className="bg-zinc-700 p-3 rounded-lg block e-full mb-3"
-                />                             
-                {errors.id_tip_vivienda   && <span>Este valor es requerido</span>}
-
-                <input
-                 type="checkbox"
-                 placeholder="tiene_parcela"
-                 {...register("tiene_parcela", { required: true })}
-                 className="bg-zinc-700 p-3 rounded-lg block e-full mb-3"
-                />                             
-                {errors.tiene_parcela   && <span>Este valor es requerido</span>}
-
-                <input
-                 type="text"
-                 placeholder="id_tip_cultivos"
-                 {...register("id_tip_cultivos", { required: true })}
-                 className="bg-zinc-700 p-3 rounded-lg block e-full mb-3"
-                />                             
-                
-
-                <input
-                 type="text"
-                 placeholder="nivel_de_academico"
-                 {...register("nivel_de_academico", { required: true })}
-                 className="bg-zinc-700 p-3 rounded-lg block e-full mb-3"
-                />                             
-                {errors.nivel_de_academico   && <span>Este valor es requerido</span>}
-
-                <input
-                 type="text"
-                 placeholder="estado_civil"
-                 {...register("estado_civil", { required: true })}
-                 className="bg-zinc-700 p-3 rounded-lg block e-full mb-3"
-                />                             
-                {errors.estado_civil   && <span>Este valor es requerido</span>}
-
-                <input
-                 type="text"
-                 placeholder="regimen"
-                 {...register("regimen", { required: true })}
-                 className="bg-zinc-700 p-3 rounded-lg block e-full mb-3"
-                />                             
-                {errors.regimen  && <span>Este valor es requerido</span>}
-
-                <input
-                 type="text"
-                 placeholder="sexo_al_nacer"
-                 {...register("sexo_al_nacer", { required: true })}
-                 className="bg-zinc-700 p-3 rounded-lg block e-full mb-3"
-                />                             
-                {errors.sexo_al_nacer   && <span>Este valor es requerido</span>}
-
-                <input
-                 type="checkbox"
-                 placeholder="habla_otra_lenjua"
-                 {...register("habla_otra_lenjua", { required: true })}
-                 className="bg-zinc-700 p-3 rounded-lg block e-full mb-3"
-                />                             
-                {errors.habla_otra_lenjua   && <span>Este valor es requerido</span>}
-
-                <input
-                 type="text"
-                 placeholder="comunidad_de_origen"
-                 {...register("comunidad_de_origen", { required: true })}
-                 className="bg-zinc-700 p-3 rounded-lg block e-full mb-3"
-                />                             
-                {errors.comunidad_de_origen    && <span>Este valor es requerido</span>}
-
-                <input
-                 type="checkbox"
-                 placeholder="usa_medicina_tradicional"
-                 {...register("usa_medicina_tradicional", { required: true })}
-                 className="bg-zinc-700 p-3 rounded-lg block e-full mb-3"
-                />                             
-     
-                <input
-                 type="checkbox"
-                 placeholder="cuenta_con_servicios_publico"
-                 {...register("cuenta_con_servicios_publico", { required: true })}
-                 className="bg-zinc-700 p-3 rounded-lg block e-full mb-3"
-                />                             
-                {errors.cuenta_con_servicios_publico    && <span>Este valor es requerido</span>}
-                
-                <input
-                 type="text"
-                 placeholder="id_disp_de_las_basuras"
-                 {...register("id_disp_de_las_basuras", { required: true })}
-                 className="bg-zinc-700 p-3 rounded-lg block e-full mb-3"
-                />                             
-                {errors.id_disp_de_las_basuras    && <span>Este valor es requerido</span>}
-
-                <button className="gb-indigo-500 p-3 rounded-lg block w-full mt-3">
-                Guardar</button>
             </form>
 
-           
+            {/* Botón de eliminar solo si hay un ID */}
             {params.id && (
                 <div className="flex justify-end">
                     <button
-                        className="bg-red-500 p-3 rounded-lg  w-48 mt-3"
+                        className="bg-red-500 p-3 rounded-lg w-48 mt-3"
                         onClick={async () => {
-                            const accepted = window.confirm('esta seguo de borrar el registro?');
+                            const accepted = window.confirm('¿Está seguro de borrar el registro?');
                             if (accepted) {
                                 await deleteTblDatPer(params.id);
-                                toast.success('comunero eliminado', {
-                                    position: "bottom-right",
-                                    style: {
-                                        background: "#101010",
-                                        color: "#ffff",
-                                    }
-                                })
-
+                                toast.success('Comunero eliminado', { position: "bottom-right" });
                                 navigate('/Datper');
                             }
                         }}
                     >
-                        Delete
+                        Eliminar
                     </button>
                 </div>
+
             )}
+
         </div>
+
     );
 }
