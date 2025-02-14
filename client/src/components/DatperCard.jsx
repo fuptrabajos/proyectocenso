@@ -1,5 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 
+
+
 export function DatperCard({ TblDatPer }) {
     const navigate = useNavigate();
 
@@ -9,13 +11,13 @@ export function DatperCard({ TblDatPer }) {
             onClick={() => navigate(`/Datper/${TblDatPer.id_paciente}`)}
         >
             {/* Encabezado */}
-            <h1 className="font-bold uppercase text-lg text-white mb-2">{TblDatPer.Tip_iden_usu}</h1>
             <p className="text-slate-400 font-semibold mb-2">IDENTIDAD: {TblDatPer.identificacion_usuario}</p>
 
             {/* Grid para organizar los datos */}
             
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
                 <div>
+                    
                     <p><span className="font-semibold text-slate-300">Nombre 1:</span> {TblDatPer.nombre_1}</p>
                     <p><span className="font-semibold text-slate-300">Nombre 2:</span> {TblDatPer.nombre_2}</p>
                     <p><span className="font-semibold text-slate-300">Apellido 1:</span> {TblDatPer.apellido_1}</p>
@@ -24,6 +26,7 @@ export function DatperCard({ TblDatPer }) {
                     <p><span className="font-semibold text-slate-300">Lugar de Residencia:</span> {TblDatPer.lugar_residencia}</p>
                     <p><span className="font-semibold text-slate-300">Etnia:</span> {TblDatPer.etnia}</p>
                     <p><span className="font-semibold text-slate-300">Resguardo:</span> {TblDatPer.resguardo}</p>
+                    <p><span className="font-semibold text-slate-300">Numero de familia:</span> {TblDatPer.numero_familia}</p>
                 </div>
 
                 <div>
@@ -35,8 +38,20 @@ export function DatperCard({ TblDatPer }) {
                     <p><span className="font-semibold text-slate-300">Tiene Parcela:</span> {TblDatPer.tiene_parcela ? "Sí" : "No"}</p>
                     <p><span className="font-semibold text-slate-300">Tipo de Cultivos:</span> {TblDatPer.id_tip_cultivos}</p>
                     <p><span className="font-semibold text-slate-300">Nivel Académico:</span> {TblDatPer.nivel_de_academico}</p>
-                    <p><span className="font-semibold text-slate-300">Numero Familia:</span> {TblDatPer.nivel_de_academico}</p>
+                    <p><span className="font-semibold text-slate-300">Numero Familia:</span> {TblDatPer.numero_familia}</p>
                 </div>
+                <div>
+                    <p><span className="font-semibold text-slate-300">Estado Civil:</span> {TblDatPer.estado_civil}</p>
+                    <p><span className="font-semibold text-slate-300">Regimen:</span> {TblDatPer.regimen}</p>
+                    <p><span className="font-semibold text-slate-300">Genero:</span> {TblDatPer.sexo_al_nacer}</p>
+                    <p><span className="font-semibold text-slate-300">Habla otro Idioma:</span> {TblDatPer.habla_otra_lenjua? "Sí" : "No"}</p>
+                    <p><span className="font-semibold text-slate-300">Comunidad de origen:</span> {TblDatPer.comunidad_de_origen}</p>
+                    <p><span className="font-semibold text-slate-300">Nivel de Educación:</span> {TblDatPer.numero_familia}</p>
+                    <p><span className="font-semibold text-slate-300">Cree en la medicina tradicional:</span> {TblDatPer.usa_medicina_tradicional? "Sí" : "No"}</p>
+                    <p><span className="font-semibold text-slate-300">Tiene servicios publicos:</span> {TblDatPer.cuenta_con_servicios_publico? "Sí" : "No"}</p>
+                    <p><span className="font-semibold text-slate-300">Disposicion de basuras:</span> {TblDatPer.id_disp_de_las_basuras}</p>
+                </div>
+
             </div>
         </div>
     );

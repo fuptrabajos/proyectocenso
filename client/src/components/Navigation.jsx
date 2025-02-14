@@ -37,8 +37,8 @@ export function Navigation() {
                 <Link to="/Servicios" className="block font-bold text-lg mb-4 text-gray-700">
                     Listado de servicios publicos
                 </Link>
-               
 
+               
             </div>
 
             {/* Header: Botones en la parte superior */}
@@ -49,10 +49,6 @@ export function Navigation() {
                     </button>
                     <button className="bg-indigo-500 px-4 py-2 rounded-lg text-white">
                         <Link to="/Datper-create">Crear Comunero</Link>
-                    </button>
-
-                    <button className="bg-indigo-500 px-4 py-2 rounded-lg text-white">
-                        <Link to="/Datper-create">Buscar</Link>
                     </button>
 
                     <button className="bg-indigo-500 px-4 py-2 rounded-lg text-white">

@@ -94,22 +94,41 @@ export function DatperFormPage() {
 
 
         <div className="max-w-3xl mx-auto bg-zinc-800 p-6 rounded-lg">
-            <form onSubmit={onSubmit} className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+
+            <form onSubmit={onSubmit} className="grid grid-cols-1 lg:grid-cols-4 gap-4">
+
+                {[
+                    { id: "tip_iden_usu", label: "Tip Identidad", required: true },
+                    { id: "identificacion_usuario", label: "Identificación", required: true },
+                    { id: "nombre_1", label: "Primer Nombre", required: true },
+                    { id: "nombre_2", label: "Segundo Nombre" },
+                    { id: "apellido_1", label: "Primer Apellido", required: true },
+                    { id: "apellido_2", label: "Segundo Apellido" },
+                    { id: "fec_nto", label: "Fecha Nacimiento", type: "date", required: true },
+                    { id: "lugar_residencia", label: "Lugar Residencia", required: true },
+                    { id: "etnia", label: "Etnia", required: true },
+                    { id: "resguardo", label: "Resguardo", required: true },
+                    { id: "codigo_eapb", label: "Código EAPB" },
+                    { id: "lugar_de_trabajo", label: "Lugar Trabajo" },
+                    { id: "nombre_padre", label: "Nombre Padre" },
+                    { id: "nombre_madre", label: "Nombre Madre" },
+                    { id: "id_tip_vivienda", label: "Tipo de Vivienda" },
+                    { id: "id_tip_cultivos", label: "Tipos Cultivos" },
+                    { id: "nivel_de_academico", label: "Nivel Académico" },
+                    { id: "estado_civil", label: "Estado Civil" },
+                    { id: "regimen", label: "Régimen" },
+                    { id: "sexo_al_nacer", label: "Género" },
+                    { id: "comunidad_de_origen", label: "Comunidad de Origen" },
+                    { id: "id_dis_de_las_basuras", label: "Disposición de Basuras" },
+                    { id: "numero_familia", label: "Número Núcleo Familiar" },
+                ].map(({ id, label, type = "text", required }) => (
+                    <div key={id} className="w-full">
+                        <label htmlFor={id} className="block text-sm font-medium">{label}</label>
+                        <input type={type} id={id} {...register(id, { required })} className="bg-zinc-700 p-3 rounded-lg w-full mt-1" />
+                    </div>
+                ))}
 
 
-                <input type="text" placeholder="Tipo. Identidad" {...register("tip_iden_usu", { required: true })} className="bg-zinc-700 p-3 rounded-lg" />
-                <input type="text" placeholder="Identificación" {...register("identificacion_usuario", { required: true })} className="bg-zinc-700 p-3 rounded-lg" />
-                <input type="text" placeholder="Primer Nombre" {...register("nombre_1", { required: true })} className="bg-zinc-700 p-3 rounded-lg" />
-                <input type="text" placeholder="Segundo Nombre" {...register("nombre_2")} className="bg-zinc-700 p-3 rounded-lg" />
-                <input type="text" placeholder="Primer Apellido" {...register("apellido_1", { required: true })} className="bg-zinc-700 p-3 rounded-lg" />
-                <input type="text" placeholder="Segundo Apellido" {...register("apellido_2")} className="bg-zinc-700 p-3 rounded-lg" />
-                <input type="date" placeholder="Fecha Nacimiento" {...register("fec_nto", { required: true })} className="bg-zinc-700 p-3 rounded-lg" />
-                <input type="text" placeholder="Lugar Residencia" {...register("lugar_residencia", { required: true })} className="bg-zinc-700 p-3 rounded-lg" />
-                <input type="text" placeholder="Etnia" {...register("etnia", { required: true })} className="bg-zinc-700 p-3 rounded-lg" />
-                <input type="text" placeholder="Resguardo" {...register("resguardo", { required: true })} className="bg-zinc-700 p-3 rounded-lg" />
-                <input type="text" placeholder="Código EAPB" {...register("codigo_eapb")} className="bg-zinc-700 p-3 rounded-lg" />
-                <input type="text" placeholder="Lugar Trabajo" {...register("lugar_de_trabajo")} className="bg-zinc-700 p-3 rounded-lg" />
-                <input type="text" placeholder="Numero familia" {...register("numero_familia")} className="bg-zinc-700 p-3 rounded-lg" />
 
                 {/* Campos tipo checkbox */}
                 <div className="flex flex-col space-y-2">
@@ -173,6 +192,7 @@ export function DatperFormPage() {
                             />
                             <span>Sí</span>
                         </label>
+                        
                         <label className="flex items-center space-x-2">
                             <input
                                 type="radio"
