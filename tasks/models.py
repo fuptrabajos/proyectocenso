@@ -45,9 +45,10 @@ class TblDatPer(models.Model):
     usa_medicina_tradicional = models.BooleanField()
     cuenta_con_servicios_publico = models.BooleanField()
     id_disp_de_las_basuras = models.CharField(max_length=10, blank=True, null=True)
+    numero_familia = models.CharField(max_length=4,blank=True, null=True)
 
     def __str__(self):
-        return str(self.id_paciente)
+        return str(self.identificacion_usuario)
 
 class TblAfiliacion(models.Model):
     id_eapb = models.AutoField( primary_key=True)

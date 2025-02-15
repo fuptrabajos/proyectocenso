@@ -47,6 +47,7 @@ export function IdentidadFormPage() {
            }= await getTblTipIdentidad(params.id);
             setValue('des_tip_identidad', des_tip_identidad)
             
+            
 
             toast.success('Tipo de identidad actualizada',{
                 position:"bottom-right",

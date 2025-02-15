@@ -1,17 +1,14 @@
-import {useNavigate} from 'react-router-dom'
+import { useNavigate } from 'react-router-dom';
 
 
-export function DatperCard({TblDatPer}) {
 
-    const navigate = useNavigate()
-    
+export function DatperCard({ TblDatPer }) {
+    const navigate = useNavigate();
+
     return (
-        <div className='bg-zinc-800 p3 hover:bg-zinc-700
-        hover: cursor-pointer'
-
-        onClick={() =>{
-            navigate(`/Datper/${TblDatPer.id_paciente }`)
-        }}
+        <div
+            className="bg-zinc-800 p-4 hover:bg-zinc-700 hover:cursor-pointer rounded-lg shadow-md"
+            onClick={() => navigate(`/Datper/${TblDatPer.id_paciente}`)}
         >
             {/* Encabezado */}
             <p className="text-slate-400 font-semibold mb-2">IDENTIDAD: {TblDatPer.identificacion_usuario}</p>
