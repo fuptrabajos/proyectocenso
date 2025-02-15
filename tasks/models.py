@@ -29,7 +29,7 @@ class TblDatPer(models.Model):
     lugar_residencia = models.CharField(max_length=50, blank=True, null=True)
     etnia = models.CharField(max_length=50, blank=True, null=True)
     resguardo = models.CharField(max_length=50, blank=True, null=True)
-    codigo_eapb = models.ForeignKey('TblAfiliacion', models.DO_NOTHING, db_column='codigo_eapb', blank=True, null=True)
+    codigo_eapb = models.ForeignKey('TblAfiliacion', models.DO_NOTHING, db_column='nombre_eapbAfiliacion', blank=True, null=True)
     lugar_de_trabajo = models.CharField(max_length=100, blank=True, null=True)
     nombre_padre = models.CharField(max_length=20, blank=True, null=True)
     nombre_madre = models.CharField(max_length=20, blank=True, null=True)
@@ -48,6 +48,15 @@ class TblDatPer(models.Model):
 
     def __str__(self):
         return str(self.id_paciente)
+
+class TblAfiliacion(models.Model):
+    id_eapb = models.AutoField( primary_key=True)
+    codigo_eapb = models.CharField(max_length=7)
+    nombre_eapbAfiliacion = models.CharField(max_length=255)
+    regimen = models.CharField(max_length=20)
+
+    def __str__(self):
+        return self.nombre_eapb
 
 
 
@@ -83,15 +92,6 @@ class TblTiposCultivo(models.Model):
 
     def __str__(self):
         return self.des_cultivos
-
-class TblAfiliacion(models.Model):
-    id_eapb = models.AutoField( primary_key=True)
-    codigo_eapb = models.CharField(max_length=7)
-    nombre_eapb = models.CharField(max_length=255)
-    regimen = models.CharField(max_length=20)
-
-    def __str__(self):
-        return self.nombre_eapb
 
 class TblNivelAcademico(models.Model):
    
