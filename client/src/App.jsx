@@ -27,6 +27,7 @@ import Dashboard from "./pages/Dashboard";
 
 function App() {
   const [user, setUser] = useState(null);
+  
 
   useEffect(() => {
     const token = localStorage.getItem("token");
