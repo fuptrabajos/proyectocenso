@@ -14,7 +14,7 @@ export function AfiliacionCard({TblAfiliacion}) {
         }}
         >
         <h1 className='font-bold uppercase'>{TblAfiliacion.codigo_eapb}</h1>
-        <p className='text-slate-400'>{TblAfiliacion.nombre_eapb}</p>
+        <p className='text-slate-400'>{TblAfiliacion.nombre_eapbAfiliacion}</p>
         <p className='text-slate-400'>{TblAfiliacion.regimen}</p>
                 
     </div>

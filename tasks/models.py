@@ -10,11 +10,12 @@ class Task(models.Model):
         return self.title
     
 class TblTipIdentidad(models.Model):
-    id_tip_identidad = models.CharField(max_length=12, primary_key=True, default='DNI', verbose_name="Tipo de Identidad")
+    id_tipo_identidad = models.AutoField(primary_key=True)
+    tip_identidad = models.CharField(max_length=12)
     des_tip_identidad = models.CharField(max_length=50)
 
     def __str__(self):
-        return self.id_tip_identidad
+        return self.des_tip_identidad
     
    
 class TblDatPer(models.Model):
@@ -29,7 +30,7 @@ class TblDatPer(models.Model):
     lugar_residencia = models.CharField(max_length=50, blank=True, null=True)
     etnia = models.CharField(max_length=50, blank=True, null=True)
     resguardo = models.CharField(max_length=50, blank=True, null=True)
-    codigo_eapb = models.ForeignKey('TblAfiliacion', models.DO_NOTHING, db_column='codigo_eapb', blank=True, null=True)
+    codigo_eapb = models.ForeignKey('TblAfiliacion', models.DO_NOTHING, db_column='nombre_eapbAfiliacion', blank=True, null=True)
     lugar_de_trabajo = models.CharField(max_length=100, blank=True, null=True)
     nombre_padre = models.CharField(max_length=20, blank=True, null=True)
     nombre_madre = models.CharField(max_length=20, blank=True, null=True)
@@ -44,10 +45,20 @@ class TblDatPer(models.Model):
     comunidad_de_origen = models.CharField(max_length=255, blank=True, null=True)
     usa_medicina_tradicional = models.BooleanField()
     cuenta_con_servicios_publico = models.BooleanField()
-    id_disp_de_las_basuras = models.CharField(max_length=10, blank=True, null=True)
+    id_disp_de_las_basuras = models.ForeignKey('TblDisBasuras',models.DO_NOTHING, db_column='id_disp_de_las_basuras', blank=True, null=True )
+    numero_familia = models.CharField(max_length=4,blank=True, null=True)
 
     def __str__(self):
-        return str(self.id_paciente)
+        return str(self.identificacion_usuario)
+
+class TblAfiliacion(models.Model):
+    id_eapb = models.AutoField( primary_key=True)
+    codigo_eapb = models.CharField(max_length=7)
+    nombre_eapbAfiliacion = models.CharField(max_length=255)
+    regimen = models.CharField(max_length=20)
+
+    def __str__(self):
+        return self.nombre_eapbAfiliacion
 
 
 
@@ -83,15 +94,6 @@ class TblTiposCultivo(models.Model):
 
     def __str__(self):
         return self.des_cultivos
-
-class TblAfiliacion(models.Model):
-    id_eapb = models.AutoField( primary_key=True)
-    codigo_eapb = models.CharField(max_length=7)
-    nombre_eapb = models.CharField(max_length=255)
-    regimen = models.CharField(max_length=20)
-
-    def __str__(self):
-        return self.nombre_eapb
 
 class TblNivelAcademico(models.Model):
    

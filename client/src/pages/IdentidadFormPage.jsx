@@ -43,9 +43,11 @@ export function IdentidadFormPage() {
     async function loadIdentidad() {
         if (params.id) {
            const {
-            data: {des_tip_identidad}
+            data: {tip_identidad, des_tip_identidad}
            }= await getTblTipIdentidad(params.id);
+            setValue('tip_identidad', tip_identidad)
             setValue('des_tip_identidad', des_tip_identidad)
+            
             
 
             toast.success('Tipo de identidad actualizada',{
@@ -63,9 +65,17 @@ export function IdentidadFormPage() {
     return (
         <div className="max-w-xl mx-auto">
             <form onSubmit={onSubmit}>
+            <label className="text-sm font-medium">Tipo Identidad</label>
+            <input
+                 type="text"
+                 {...register("tip_identidad", { required: true })} 
+                 className="bg-zinc-700 p-3 rounded-lg block e-full mb-3"
+                />
+                {errors.codigo_eapb && <span>Este valor es requerido</span>}
+                <label className="text-sm font-medium">Descripcion Identidad</label>
                 <input
                  type="text"
-                 placeholder="des_tip_identidad"
+                 placeholder=""
                  {...register("des_tip_identidad", { required: true })} 
                  className="bg-zinc-700 p-3 rounded-lg block e-full mb-3"
                 />

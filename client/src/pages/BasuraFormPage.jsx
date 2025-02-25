@@ -63,9 +63,10 @@ export function BasuraFormPage() {
     return (
         <div className="max-w-xl mx-auto">
             <form onSubmit={onSubmit}>
+               
+            <label htmlFor="des_disp_basura" className="block text-white">des_disp_basura</label>
                 <input
                  type="text"
-                 placeholder="des_disp_basura"
                  {...register("des_disp_basura", { required: true })} 
                  className="bg-zinc-700 p-3 rounded-lg block e-full mb-3"
                 />

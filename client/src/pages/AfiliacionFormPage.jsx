@@ -43,10 +43,10 @@ export function AfiliacionFormPage() {
     async function loadAfiliacion() {
         if (params.id) {
            const {
-            data: {codigo_eapb, nombre_eapb, regimen}
+            data: {codigo_eapb, nombre_eapbAfiliacion, regimen}
            }= await getTblAfiliacion(params.id);
             setValue('codigo_eapb', codigo_eapb)
-            setValue('nombre_eapb', nombre_eapb)
+            setValue('nombre_eapbAfiliacion', nombre_eapbAfiliacion)
             setValue('regimen', regimen)
 
             toast.success('Eps Actualizada exitosamente',{
@@ -78,10 +78,10 @@ export function AfiliacionFormPage() {
                 <input
                  type="text"
                  
-                 {...register("nombre_eapb", { required: true })}
+                 {...register("nombre_eapbAfiliacion", { required: true })}
                 className="bg-zinc-700 p-3 rounded-lg block e-full mb-3"
                 />
-                {errors.nombre_eapb && <span>Este valor es requerido</span>}
+                {errors.nombre_eapbAfiliacion && <span>Este valor es requerido</span>}
 
                 <label htmlFor="codigo_eapb" className="block text-white">Regimen de EAPB</label>
                 <input

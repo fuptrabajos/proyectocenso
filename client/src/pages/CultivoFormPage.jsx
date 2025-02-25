@@ -64,6 +64,7 @@ export function CultivoFormPage() {
     return (
         <div className="max-w-xl mx-auto">
             <form onSubmit={onSubmit}>
+            <label htmlFor="des_cultivos" className="block text-white">DESCRIPCIÓN DEL CULTIVO</label>
                 <input
                  type="text"
                  placeholder="des_cultivos"
@@ -71,6 +72,8 @@ export function CultivoFormPage() {
                  className="bg-zinc-700 p-3 rounded-lg block e-full mb-3"
                 />
                 {errors.des_cultivos && <span>Este valor es requerido</span>}
+
+                <label htmlFor="cantidad_en_hectareas" className="block text-white">CANTIDAD EN HECTAREAS</label>
                 <input
                  type="text"
                  placeholder="cantidad_en_hectareas"
@@ -78,6 +81,8 @@ export function CultivoFormPage() {
                 className="bg-zinc-700 p-3 rounded-lg block e-full mb-3"
                 />
                 {errors.cantidad_en_hectareas && <span>Este valor es requerido</span>}
+
+                <label htmlFor="periodicidad" className="block text-white">PERIODICIDAD</label>
                 <input
                  type="text"
                  placeholder="periodicidad"

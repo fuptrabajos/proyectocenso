@@ -16,12 +16,14 @@ export function DatperList(){
         loadComuneros();
     },[]);
     return (
-    <div className="grid grid-cols-4 gap-3">
+    <div className="grid grid-cols-100 gap-3">
         {Datper.map((TblDatPer) => (
             <DatperCard key={TblDatPer.id_paciente} TblDatPer={TblDatPer} />
 
         ))}
     </div>    
+
+    
     );
 }
 
