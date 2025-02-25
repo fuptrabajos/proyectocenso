@@ -10,13 +10,13 @@ export function IdentidadCard({TblTipIdentidad}) {
         hover: cursor-pointer'
 
         onClick={() =>{
-            navigate(`/Identidad/${TblTipIdentidad.id_tip_identidad}`)
+            navigate(`/Identidad/${TblTipIdentidad.id_tipo_identidad}`)
         }}
         >
-        <h1 className='font-bold uppercase'>{TblTipIdentidad.id_tip_identidad}</h1>
+        <h1 className='font-bold uppercase'>{TblTipIdentidad.tip_identidad}</h1>
         <p className='text-slate-400'>{TblTipIdentidad.des_tip_identidad}</p>
         
-                
+                    
     </div>
     )
 }

@@ -18,7 +18,7 @@ export function IdentidadList(){
     return (
     <div className="grid grid-cols-4 gap-3">
         {identidad.map((TblTipIdentidad) => (
-            <IdentidadCard key={TblTipIdentidad.id_tip_identidad} TblTipIdentidad={TblTipIdentidad} />
+            <IdentidadCard key={TblTipIdentidad.id_tipo_identidad} TblTipIdentidad={TblTipIdentidad} />
 
         ))}
     </div>    

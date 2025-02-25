@@ -26,6 +26,7 @@ class TblDatPerSerializer(serializers.ModelSerializer):
     des_cultivos = serializers.CharField(source='id_tip_cultivos.des_cultivos', read_only=True)
     des_nivel_academico = serializers.CharField(source='nivel_de_academico.des_nivel_academico', read_only=True)
     des_regimen = serializers.CharField(source='regimen.des_regimen', read_only=True)
+    des_disp_basura = serializers.CharField(source='id_disp_de_las_basuras.des_disp_basura', read_only=True)
     
     class Meta: 
         model = TblDatPer

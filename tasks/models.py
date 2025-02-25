@@ -10,11 +10,12 @@ class Task(models.Model):
         return self.title
     
 class TblTipIdentidad(models.Model):
-    id_tip_identidad = models.CharField(max_length=12, primary_key=True, default='DNI', verbose_name="Tipo de Identidad")
+    id_tipo_identidad = models.AutoField(primary_key=True)
+    tip_identidad = models.CharField(max_length=12)
     des_tip_identidad = models.CharField(max_length=50)
 
     def __str__(self):
-        return self.id_tip_identidad
+        return self.des_tip_identidad
     
    
 class TblDatPer(models.Model):
@@ -44,7 +45,7 @@ class TblDatPer(models.Model):
     comunidad_de_origen = models.CharField(max_length=255, blank=True, null=True)
     usa_medicina_tradicional = models.BooleanField()
     cuenta_con_servicios_publico = models.BooleanField()
-    id_disp_de_las_basuras = models.CharField(max_length=10, blank=True, null=True)
+    id_disp_de_las_basuras = models.ForeignKey('TblDisBasuras',models.DO_NOTHING, db_column='id_disp_de_las_basuras', blank=True, null=True )
     numero_familia = models.CharField(max_length=4,blank=True, null=True)
 
     def __str__(self):
@@ -57,7 +58,7 @@ class TblAfiliacion(models.Model):
     regimen = models.CharField(max_length=20)
 
     def __str__(self):
-        return self.nombre_eapb
+        return self.nombre_eapbAfiliacion
 
 
 

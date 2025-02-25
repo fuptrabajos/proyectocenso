@@ -30,26 +30,25 @@ export function DatperCard({ TblDatPer }) {
                 </div>
 
                 <div>
-                    <p><span className="font-semibold text-slate-300">Código EAPB:</span> {TblDatPer.codigo_eapb}</p>
+                    <p><span className="font-semibold text-slate-300">Código EAPB:</span> {TblDatPer.nombre_eapbAfiliacion}</p>
                     <p><span className="font-semibold text-slate-300">Trabajo:</span> {TblDatPer.lugar_de_trabajo}</p>
                     <p><span className="font-semibold text-slate-300">Padre:</span> {TblDatPer.nombre_padre}</p>
                     <p><span className="font-semibold text-slate-300">Madre:</span> {TblDatPer.nombre_madre}</p>
-                    <p><span className="font-semibold text-slate-300">Tipo de Vivienda:</span> {TblDatPer.id_tip_vivienda}</p>
+                    <p><span className="font-semibold text-slate-300">Tipo de Vivienda:</span> {TblDatPer.tipo_vivienda}</p>
                     <p><span className="font-semibold text-slate-300">Tiene Parcela:</span> {TblDatPer.tiene_parcela ? "Sí" : "No"}</p>
-                    <p><span className="font-semibold text-slate-300">Tipo de Cultivos:</span> {TblDatPer.id_tip_cultivos}</p>
-                    <p><span className="font-semibold text-slate-300">Nivel Académico:</span> {TblDatPer.nivel_de_academico}</p>
+                    <p><span className="font-semibold text-slate-300">Tipo de Cultivos:</span> {TblDatPer.des_cultivos}</p>
+                    <p><span className="font-semibold text-slate-300">Nivel Académico:</span> {TblDatPer.des_nivel_academico}</p>
                     <p><span className="font-semibold text-slate-300">Numero Familia:</span> {TblDatPer.numero_familia}</p>
                 </div>
                 <div>
                     <p><span className="font-semibold text-slate-300">Estado Civil:</span> {TblDatPer.estado_civil}</p>
-                    <p><span className="font-semibold text-slate-300">Regimen:</span> {TblDatPer.regimen}</p>
+                    <p><span className="font-semibold text-slate-300">Regimen:</span> {TblDatPer.des_regimen}</p>
                     <p><span className="font-semibold text-slate-300">Genero:</span> {TblDatPer.sexo_al_nacer}</p>
                     <p><span className="font-semibold text-slate-300">Habla otro Idioma:</span> {TblDatPer.habla_otra_lenjua ? "Sí" : "No"}</p>
                     <p><span className="font-semibold text-slate-300">Comunidad de origen:</span> {TblDatPer.comunidad_de_origen}</p>
-                    <p><span className="font-semibold text-slate-300">Nivel de Educación:</span> {TblDatPer.numero_familia}</p>
                     <p><span className="font-semibold text-slate-300">Cree en la medicina tradicional:</span> {TblDatPer.usa_medicina_tradicional ? "Sí" : "No"}</p>
                     <p><span className="font-semibold text-slate-300">Tiene servicios publicos:</span> {TblDatPer.cuenta_con_servicios_publico ? "Sí" : "No"}</p>
-                    <p><span className="font-semibold text-slate-300">Disposicion de basuras:</span> {TblDatPer.id_disp_de_las_basuras}</p>
+                    <p><span className="font-semibold text-slate-300">Disposicion de basuras:</span> {TblDatPer.des_disp_basura}</p>
                 </div>
 
             </div>
@@ -78,7 +77,7 @@ export function DatperCard({ TblDatPer }) {
         <p className='text-slate-400'>{TblDatPer.comunidad_de_origen }</p>
         <p className='text-slate-400'>{TblDatPer.usa_medicina_tradicional  }</p>
         <p className='text-slate-400'>{TblDatPer.cuenta_con_servicios_publico  }</p>
-        <p className='text-slate-400'>{TblDatPer.id_disp_de_las_basuras  }</p>
+        <p className='text-slate-400'>{TblDatPer.des_disp_basura }</p>
                 
     </div>
     )
