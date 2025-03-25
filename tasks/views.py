@@ -1,11 +1,11 @@
 from rest_framework import viewsets
-from .serializer import TaskSerializer, TblDatPerSerializer, TblTiposDeViviendaSerializer, TblAfiliacionSerializer, TblNivelAcademicoSerializer, TblRegimenSerializer, TblDisBasurasSerializer, TblTiposServiPubliSerializer
+from .serializer import TaskSerializer, TblDatPerSerializer, TblTiposDeViviendaSerializer, TblAfiliacionSerializer, TblNivelAcademicoSerializer, TblRegimenSerializer, TblDisBasurasSerializer, TblTiposServiPubliSerializer, TblSexoSerializer
 from .serializer import TblTipIdentidadSerializer
-from .serializer import TblTiposCultivoSerializer
+from .serializer import TblTiposCultivoSerializer,EncuestaHabitosSerializer
 from .models import Task
-from .models import TblTipIdentidad
+from .models import TblTipIdentidad,EncuestaHabitos
 from .models import TblTiposDeVivienda
-from .models import TblDatPer, TblTiposCultivo,TblAfiliacion, TblNivelAcademico, TblRegimen, TblDisBasuras, TblTiposServiPubli
+from .models import TblDatPer, TblTiposCultivo,TblAfiliacion, TblNivelAcademico, TblRegimen, TblDisBasuras, TblTiposServiPubli, TblSexo
 
 
 # Create your views here.
@@ -13,6 +13,11 @@ from .models import TblDatPer, TblTiposCultivo,TblAfiliacion, TblNivelAcademico,
 class TaskView(viewsets.ModelViewSet):
     serializer_class = TaskSerializer
     queryset = Task.objects.all()
+
+class EncuestaHabitosView(viewsets.ModelViewSet):
+    serializer_class = EncuestaHabitosSerializer
+    queryset = EncuestaHabitos.objects.all()
+
 
 class TblTipIdentidadView(viewsets.ModelViewSet):
     serializer_class = TblTipIdentidadSerializer
@@ -49,3 +54,7 @@ class TblDisBasurasView(viewsets.ModelViewSet):
 class TblTiposServiPubliView(viewsets.ModelViewSet):
     serializer_class = TblTiposServiPubliSerializer
     queryset = TblTiposServiPubli.objects.all()
+
+class TblSexoView(viewsets.ModelViewSet):
+    serializer_class = TblSexoSerializer
+    queryset = TblSexo.objects.all()

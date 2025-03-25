@@ -10,12 +10,12 @@ export function AfiliacionCard({TblAfiliacion}) {
         hover: cursor-pointer'
 
         onClick={() =>{
-            navigate(`/Afiliacion/${TblAfiliacion.id_eapb}`)
+            navigate(`/dashboard/Afiliacion/${TblAfiliacion.id_eapb}`)
         }}
         >
-        <h1 className='font-bold uppercase'>{TblAfiliacion.codigo_eapb}</h1>
-        <p className='text-slate-400'>{TblAfiliacion.nombre_eapbAfiliacion}</p>
-        <p className='text-slate-400'>{TblAfiliacion.regimen}</p>
+        <h1 className="font-bold uppercase">Codigo: {TblAfiliacion.codigo_eapb}</h1>
+        <p className="text-slate-400">Nombre Afiliacion:{TblAfiliacion.nombre_eapbAfiliacion}</p>
+        <p className="text-slate-400">Regimen: {TblAfiliacion.regimen}</p>
                 
     </div>
     )

@@ -11,7 +11,7 @@ export function TasksFormPage() {
 
     const onSubmit = handleSubmit(async data => {
       await createTask(data);
-      navigate('/tasks');
+      navigate('/dashboard/tasks');
      
     });
 
@@ -41,7 +41,7 @@ export function TasksFormPage() {
                 const accepted = window.confirm('esta seguo de borrar el registro?');
                 if(accepted) {
                     await deleteTask(params.id);
-                    navigate("/tasks");
+                    navigate("/dashboard/tasks");
                 }
             }}
             >

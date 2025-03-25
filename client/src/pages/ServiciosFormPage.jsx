@@ -35,7 +35,7 @@ export function ServiciosFormPage() {
             })
         }
 
-        navigate("/Servicios");
+        navigate("/dashboard/Servicios");
 
     });
 
@@ -102,7 +102,7 @@ export function ServiciosFormPage() {
                                     }
                                 })
 
-                                navigate('/TblTiposServiPubli');
+                                navigate('/dashboard/Servicios');
                             }
                         }}
                     >

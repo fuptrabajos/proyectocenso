@@ -35,7 +35,7 @@ export function AfiliacionFormPage() {
             })
         }
 
-        navigate("/Afiliacion");
+        navigate("/dashboard/Afiliacion");
 
     });
 
@@ -113,7 +113,7 @@ export function AfiliacionFormPage() {
                                     }
                                 })
 
-                                navigate('/TblAfiliacion');
+                                navigate('/dashboard/Afiliacion');
                             }
                         }}
                     >

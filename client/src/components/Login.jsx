@@ -29,7 +29,7 @@ function Login({ setUser }) {
 
             setUser(true); // Establecer usuario autenticado
             setError(""); // Limpiar errores
-            navigate("/dashboard"); // Redirigir al Dashboard
+            navigate("/"); // Redirigir al Dashboard
         } catch (error) {
             setError("Usuario o contraseña incorrectos");
         }

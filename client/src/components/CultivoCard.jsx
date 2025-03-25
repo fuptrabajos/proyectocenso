@@ -10,7 +10,7 @@ export function CultivoCard({TblTiposCultivo}) {
         hover: cursor-pointer'
 
         onClick={() =>{
-            navigate(`/Cultivo/${TblTiposCultivo.id_eapb}`)
+            navigate(`/dashboard/Cultivo/${TblTiposCultivo.id_eapb}`)
         }}
         >
         <h1 className='font-bold uppercase'>{TblTiposCultivo.id_tip_cultivo}</h1>

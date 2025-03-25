@@ -10,7 +10,7 @@ export function ViviendaCard({TblTiposDeVivienda}) {
         hover: cursor-pointer'
 
         onClick={() =>{
-            navigate(`/Vivienda/${TblTiposDeVivienda.id_TipDeVivienda}`)
+            navigate(`/dashboard/Vivienda/${TblTiposDeVivienda.id_TipDeVivienda}`)
         }}
         >
         <h1 className='font-bold uppercase'>{TblTiposDeVivienda.id_tip_vivienda}</h1>

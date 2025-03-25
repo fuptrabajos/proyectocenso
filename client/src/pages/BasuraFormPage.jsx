@@ -35,7 +35,7 @@ export function BasuraFormPage() {
             })
         }
 
-        navigate("/Basura");
+        navigate("/dashboard/Basura");
 
     });
 
@@ -93,7 +93,7 @@ export function BasuraFormPage() {
                                     }
                                 })
 
-                                navigate('/TblDisBasuras');
+                                navigate('/dashboard/Basura');
                             }
                         }}
                     >

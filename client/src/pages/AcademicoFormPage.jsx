@@ -29,7 +29,7 @@ export function AcademicoFormPage() {
                     style: { background: "#101010", color: "#fff" },
                 });
             }
-            navigate("/Academico");
+            navigate("/dashboard/Academico");
         } catch (error) {
             toast.error("Error al guardar los datos", {
                 position: "bottom-right",
@@ -102,7 +102,7 @@ export function AcademicoFormPage() {
                                         position: "bottom-right",
                                         style: { background: "#101010", color: "#fff" },
                                     });
-                                    navigate("/Academico");
+                                    navigate("/dashboard/Academico");
                                 } catch (error) {
                                     toast.error("Error al borrar el registro", {
                                         position: "bottom-right",

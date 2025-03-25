@@ -35,7 +35,7 @@ export function ViviendaFormPage() {
             })
         }
 
-        navigate("/Vivienda");
+        navigate("/dashboard/Vivienda");
 
     });
 
@@ -97,7 +97,7 @@ export function ViviendaFormPage() {
                                     }
                                 })
 
-                                navigate('/TblTiposDeVivienda');
+                                navigate('/dashboard/Vivienda');
                             }
                         }}
                     >

@@ -10,7 +10,7 @@ export function AcademicoCard({TblNivelAcademico}) {
         hover: cursor-pointer'
 
         onClick={() =>{
-            navigate(`/Academico/${TblNivelAcademico.id_nivel_acad}`)
+            navigate(`/dashboard/Academico/${TblNivelAcademico.id_nivel_acad}`)
         }}
         >
         <h1 className='font-bold uppercase'>{TblNivelAcademico.des_nivel_academico}</h1>

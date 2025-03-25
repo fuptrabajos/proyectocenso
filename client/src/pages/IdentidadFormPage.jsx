@@ -35,7 +35,7 @@ export function IdentidadFormPage() {
             })
         }
 
-        navigate("/Identidad");
+        navigate("/dashboard/Identidad");
 
     });
 
@@ -102,7 +102,7 @@ export function IdentidadFormPage() {
                                     }
                                 })
 
-                                navigate('/TblIdentidad');
+                                navigate('/dashboard/Identidad');
                             }
                         }}
                     >

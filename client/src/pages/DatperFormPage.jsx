@@ -10,6 +10,7 @@ import { getAllTblTiposCultivo } from '../api/Cultivo.Api';
 import { getAllTblNivelAcademico } from '../api/Academico.api'; // Importa la función para obtener los niveles académicos 
 import { getAllTblRegimen } from '../api/Regimen.api'; // Importa la función para obtener los niveles académicos 
 import {getAllTblDisBasuras} from '../api/Basura.api';
+import {getAllTblSexo} from '../api/Sexo.api';
 
 
 export function DatperFormPage() {
@@ -23,6 +24,7 @@ export function DatperFormPage() {
     const [nivelesAcademicos, setNivelesAcademicos] = useState([]); 
     const [TiposRegimen, setTiposRegimen] = useState([]); 
     const [TiposBasura, setTiposBasura] = useState([]); 
+    const [TipoSexo, setTipoSexo] = useState([]); 
     
     console.log(params);
     
@@ -50,7 +52,7 @@ export function DatperFormPage() {
             })
         }
 
-        navigate("/Datper");
+        navigate("/dashboard/Datper");
 
     });
     useEffect(() => {
@@ -135,6 +137,18 @@ export function DatperFormPage() {
         }
         fetchTiposBasura();
     }, []);
+    // Efecto para cargar los niveles académicos
+    useEffect(() => {
+        async function fetchSexo() {
+            try {
+                const response = await getAllTblSexo();
+                setTipoSexo(response.data);
+            } catch (error) {
+                console.error("Error al obtener Sexo", error);
+            }
+        }
+        fetchSexo();
+    }, []);
 
 
 
@@ -164,16 +178,16 @@ export function DatperFormPage() {
                 setValue('nombre_padre', nombre_padre)
                 setValue('nombre_madre', nombre_madre)
                 setValue('id_tip_vivienda', id_tip_vivienda)
-                setValue('tiene_parcela', tiene_parcela)
+                setValue('tiene_parcela', tiene_parcela ? "true" : "false")// Convertir a cadena de texto
                 setValue('id_tip_cultivos', id_tip_cultivos)
                 setValue('nivel_de_academico', nivel_de_academico)
                 setValue('estado_civil', estado_civil)
                 setValue('regimen', regimen)
-                setValue('sexo al nacer', sexo_al_nacer)
-                setValue('habla_otra_lenjua', habla_otra_lenjua)
+                setValue('sexo_al_nacer', sexo_al_nacer)
+                setValue('habla_otra_lenjua', habla_otra_lenjua ? "true" : "false")
                 setValue('comunidad_de_origen', comunidad_de_origen)
-                setValue('usa_medicina_tradicional', usa_medicina_tradicional)
-                setValue('cuenta_con_servicios_publico', cuenta_con_servicios_publico)
+                setValue('usa_medicina_tradicional', usa_medicina_tradicional ? "true" : "false")
+                setValue('cuenta_con_servicios_publico', cuenta_con_servicios_publico ? "true" : "false")
                 setValue('id_disp_de_las_basuras', id_disp_de_las_basuras)
 
                 toast.success('Comunero actualizado exitosamente', {
@@ -187,287 +201,268 @@ export function DatperFormPage() {
         }
         loadDatper()
     }, []) 
-    
     return (
-        <div className="max-w-6xl mx-automax-w-6xl mx-auto p-6 bg-black-100 rounded-lg shadow-lg">
-            
+        <div className="w-full max-automax-w-6xl mx-auto p-6 bg-black-100 rounded-lg shadow-lg">
+
             <form onSubmit={onSubmit} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
-            <div className="flex flex-col">
-            <label className="block text-sm font-medium mb-1">Tipo de Identidad</label>
-                <select
-                    {...register("tip_iden_usu", { required: true })} 
-                    className="bg-zinc-700 p-3 rounded-lg block e-full mb-3"
-                >
-                    <option value="">Seleccione un tipo</option>
-                    {tiposIdentidad.map((tipo) => (
-                        <option key={tipo.id_tipo_identidad} value={tipo.id_tipo_identidad}>
-                            {tipo.des_tip_identidad}
-                        </option>
-                    ))}
-                </select>    
-                {errors.tip_iden_usu && <span>Este valor es requerido</span>}
-                </div>
-                
-                <input
-
-                 type="text"
-                 placeholder="identificacion_usuario"
-                 {...register("identificacion_usuario", { required: true })}
-                className="bg-zinc-700 p-3 rounded-lg block e-full mb-3"
-                />
-                {errors.identificacion_usuario  && <span>Este valor es requerido</span>}
-
-                <input
-                 type="text"
-                 placeholder="nombre_1"
-                 {...register("nombre_1", { required: true })}
-                 className="bg-zinc-700 p-3 rounded-lg block e-full mb-3"
-                />                             
-                {errors.nombre_1  && <span>Este valor es requerido</span>}  
-                
-                <input
-                 type="text"
-                 placeholder="nombre_2"
-                 {...register("nombre_2", { required: true })}
-                 className="bg-zinc-700 p-3 rounded-lg block e-full mb-3"
-                />                             
-               
-                <input
-                 type="text"
-                 placeholder="apellido_1"
-                 {...register("apellido_1", { required: true })}
-                 className="bg-zinc-700 p-3 rounded-lg block e-full mb-3"
-                />                             
-                {errors.apellido_1   && <span>Este valor es requerido</span>}
-
-                <input
-                 type="text"
-                 placeholder="apellido_2"
-                 {...register("apellido_2", { required: true })}
-                 className="bg-zinc-700 p-3 rounded-lg block e-full mb-3"
-                />                             
-                
-
-                <input
-                 type="date"
-                 placeholder="fec_nto"
-                 {...register("fec_nto", { required: true })}
-                 className="bg-zinc-700 p-3 rounded-lg block e-full mb-3"
-                />                             
-                {errors.fec_nto   && <span>Este valor es requerido</span>}
-
-                <input
-                 type="text"
-                 placeholder="lugar_residencia"
-                 {...register("lugar_residencia", { required: true })}
-                 className="bg-zinc-700 p-3 rounded-lg block e-full mb-3"
-                />                             
-                {errors.lugar_residencia   && <span>Este valor es requerido</span>}
-
-                <input
-                 type="text"
-                 placeholder="etnia"
-                 {...register("etnia", { required: true })}
-                 className="bg-zinc-700 p-3 rounded-lg block e-full mb-3"
-                />                             
-                {errors.etnia  && <span>Este valor es requerido</span>}
-
-                <input
-                 type="text"
-                 placeholder="resguardo"
-                 {...register("resguardo", { required: true })}
-                 className="bg-zinc-700 p-3 rounded-lg block e-full mb-3"
-                />                             
-                {errors.resguardo   && <span>Este valor es requerido</span>}
                 <div className="flex flex-col">
-                <label className="block text-sm font-medium mb-1">Tipo de EPS</label>
-                <select
-                    {...register("codigo_eapb", { required: true })} 
-                    className="bg-zinc-700 p-3 rounded-lg block e-full mb-3"
-                >
-                    <option value="">Seleccione EPS</option>
-                    {tiposEps.map((tipo) => (
-                        <option key={tipo.id_eapb} value={tipo.id_eapb}>
-                            {tipo.nombre_eapbAfiliacion}
-                        </option>
-                    ))}
-                </select>   
-                </div> 
+                    <label className="block text-sm font-medium mb-1">Tipo de Identidad</label>
+                    <select
+                        {...register("tip_iden_usu", { required: true })}
+                        className="bg-zinc-700 p-3 rounded-lg block e-full mb-3">
 
-                {/* <input
-                 type="text"
-                 placeholder="codigo_eapb"
-                 {...register("codigo_eapb", { required: false })}
-                 className="bg-zinc-700 p-3 rounded-lg block e-full mb-3"
-                />                              */}
-                {errors.codigo_eapb   && <span>Este valor es requerido</span>}
+                        <option value="">Seleccione un tipo</option>
+                        {tiposIdentidad.map((tipo) => (
+                            <option key={tipo.id_tipo_identidad} value={tipo.id_tipo_identidad}>
+                                {tipo.des_tip_identidad}
+                            </option>
+                        ))}
+                    </select>
+                    {errors.tip_iden_usu && <span>Este valor es requerido</span>}
 
-                <input
-                 type="text"
-                 placeholder="lugar_de_trabajo"
-                 {...register("lugar_de_trabajo", { required: true })}
-                 className="bg-zinc-700 p-3 rounded-lg block e-full mb-3"
-                />                             
-                
+                </div>
 
-                <input
-                 type="text"
-                 placeholder="nombre_padre"
-                 {...register("nombre_padre", { required: true })}
-                 className="bg-zinc-700 p-3 rounded-lg block e-full mb-3"
-                />                             
-                
+                <div> <label className="">Identidad de comunero</label>
+                    <input
+                        type="text"
+                        {...register("identificacion_usuario", { required: true })}
+                        className="bg-zinc-700 p-3 rounded-lg block e-full mb-3"
+                    />
+                    {errors.identificacion_usuario && <span>Este valor es requerido</span>}
+                </div>
 
-                <input
-                 type="text"
-                 placeholder="nombre_madre"
-                 {...register("nombre_madre", { required: true })}
-                 className="bg-zinc-700 p-3 rounded-lg block e-full mb-3"
-                />  
-                 {/* --- Campo para el Tipo de Vivienda --- */}
+                <div> <label className="">Primer Nombre</label>
+                    <input
+                        type="text"
+                        {...register("nombre_1", { required: true })}
+                        className="bg-zinc-700 p-3 rounded-lg block e-full mb-3"
+                    />
+                    {errors.nombre_1 && <span>Este valor es requerido</span>}
+
+                </div>
+
+                <div> <label className="">Segundo Nombre</label>
+                    <input
+                        type="text"
+                        {...register("nombre_2", { required: true })}
+                        className="bg-zinc-700 p-3 rounded-lg block e-full mb-3"
+                    />
+                    {errors.nombre_2 && <span>Este valor es requerido</span>}
+                </div>
+
+                <div> <label className="">Primer Apellido</label>
+                    <input
+                        type="text"
+                        {...register("apellido_1", { required: true })}
+                        className="bg-zinc-700 p-3 rounded-lg block e-full mb-3"
+                    />
+                    {errors.apellido_1 && <span>Este valor es requerido</span>}
+                </div>
+
+                <div> <label className="">Segundo Apellido</label>
+                    <input
+                        type="text"
+                        {...register("apellido_2", { required: true })}
+                        className="bg-zinc-700 p-3 rounded-lg block e-full mb-3"
+                    />
+                    {errors.apellido_1 && <span>Este valor es requerido</span>}
+                </div>
+
+                <div> <label className="">Fecha Nacimiento</label>
+                    <input
+                        type="date"
+                        {...register("fec_nto", { required: true })}
+                        className="bg-zinc-700 p-3 rounded-lg block e-full mb-3"
+                    />
+                    {errors.fec_nto && <span>Este valor es requerido</span>}
+                </div>
+
+                <div> <label htmlFor="">Direccion Residencia</label>
+                    <input
+                        type="text"
+                        {...register("lugar_residencia", { required: true })}
+                        className="bg-zinc-700 p-3 rounded-lg block e-full mb-3"
+                    />
+                    {errors.lugar_residencia && <span>Este valor es requerido</span>}
+                </div>
+
+                <div> <label htmlFor="">Etnia</label>
+                    <input
+                        type="text"
+                        {...register("etnia", { required: true })}
+                        className="bg-zinc-700 p-3 rounded-lg block e-full mb-3"
+                    />
+                    {errors.etnia && <span>Este valor es requerido</span>}
+                </div>
+
+                <div> <label htmlFor="">Resguardo</label>
+                    <input
+                        type="text"
+                        {...register("resguardo", { required: true })}
+                        className="bg-zinc-700 p-3 rounded-lg block e-full mb-3"
+                    />
+                    {errors.resguardo && <span>Este valor es requerido</span>}
+                </div>
+
+                <div> <label htmlFor="">Lugar de Trabajo</label>
+                    <input
+                        type="text"
+                        {...register("lugar_de_trabajo", { required: true })}
+                        className="bg-zinc-700 p-3 rounded-lg block e-full mb-3"
+                    />
+                    {errors.resguardo && <span>Este valor es requerido</span>}
+                </div>
+
+                <div> <label htmlFor="">Nombre del Padre</label>
+                    <input
+                        type="text"
+                        {...register("nombre_padre", { required: true })}
+                        className="bg-zinc-700 p-3 rounded-lg block e-full mb-3"
+                    />
+                    {errors.nombre_padre && <span>Este valor es requerido</span>}
+                </div>
+
+                <div> <label htmlFor="">Nombre de la Madre</label>
+                    <input
+                        type="text"
+                        {...register("nombre_madre", { required: true })}
+                        className="bg-zinc-700 p-3 rounded-lg block e-full mb-3"
+                    />
+                    {errors.nombre_madre && <span>Este valor es requerido</span>}
+                </div>
+
+                <div> <label htmlFor="">Estado Civil</label>
+                    <input
+                        type="text"
+                        {...register("estado_civil", { required: true })}
+                        className="bg-zinc-700 p-3 rounded-lg block e-full mb-3"
+                    />
+                    {errors.estado_civil && <span>Este valor es requerido</span>}
+                </div>
+                <div className="flex flex-col">
+                    <label className="block text-sm font-medium mb-1">Sexo</label>
+                    <select
+                        {...register("sexo_al_nacer", { required: true })}
+                        className="bg-zinc-700 p-3 rounded-lg block w-full mb-3">
+
+                        <option value="">Seleccione sexo</option>
+                        {TipoSexo.map((sex) => (
+                            <option key={sex.codigo} value={sex.codigo}>
+                                {sex.descripcion}
+                            </option>
+                        ))}
+                    </select>
+                    {errors.nivel_de_academico && <span>Este valor es requerido</span>}
+                </div>
+
+                <div> <label htmlFor="">Comunidad de Origen</label>
+                    <input
+                        type="text"
+                        {...register("comunidad_de_origen", { required: true })}
+                        className="bg-zinc-700 p-3 rounded-lg block e-full mb-3"
+                    />
+                    {errors.comunidad_de_origen && <span>Este valor es requerido</span>}
+                </div>
 
                 <div className="flex flex-col">
-                <label className="block text-sm font-medium mb-1">Tipo de Vivienda</label>
-                <select
-                    {...register("id_tip_vivienda", { required: true })}
-                    className="bg-zinc-700 p-3 rounded-lg block w-full mb-3"
-                >
-                    <option value="">Seleccione un tipo de vivienda</option>
-                    {tiposVivienda.map((vivienda) => (
-                        <option key={vivienda.id_tip_vivienda} value={vivienda.id_tip_vivienda}>
-                            {vivienda.tipo_vivienda}
-                        </option>
-                    ))}
-                </select>   
-                </div>                        
-
-                {/* <input
-                 type="text"
-                 placeholder="id_tip_vivienda"
-                 {...register("id_tip_vivienda", { required: true })}
-                 className="bg-zinc-700 p-3 rounded-lg block e-full mb-3"
-                />                              */}
-                {errors.id_tip_vivienda   && <span>Este valor es requerido</span>}
-                {/* Campos tipo checkbox */}
-                <div className="flex flex-col space-y-2">
-                    <label className="text-sm font-medium">¿Tiene parcela?</label>
-                    <div className="flex space-x-4">
-                        <label className="flex items-center space-x-2">
-                            <input
-                                type="radio"
-                                value="true"
-                                {...register("tiene_parcela", { required: true })}
-                                className="bg-zinc-700 p-3 rounded-lg"
-                            />
-                            <span>Sí</span>
-                        </label>
-                        <label className="flex items-center space-x-2">
-                            <input
-                                type="radio"
-                                value="false"
-                                {...register("tiene_parcela", { required: true })}
-                                className="bg-zinc-700 p-3 rounded-lg"
-                            />
-                            <span>No</span>
-                        </label>
-                    </div>
+                    <label className="block text-sm font-medium mb-1">Tipo de EPS</label>
+                    <select
+                        {...register("codigo_eapb", { required: true })}
+                        className="bg-zinc-700 p-3 rounded-lg block e-full mb-3"
+                    >
+                        <option value="">Seleccione EPS</option>
+                        {tiposEps.map((tipo) => (
+                            <option key={tipo.id_eapb} value={tipo.id_eapb}>
+                                {tipo.nombre_eapbAfiliacion}
+                            </option>
+                        ))}
+                    </select>
                 </div>
-{/* 
-                <input
-                 type="checkbox"
-                 placeholder="tiene_parcela"
-                 {...register("tiene_parcela", { required: true })}
-                 className="bg-zinc-700 p-3 rounded-lg block e-full mb-3"
-                />                             
-                {errors.tiene_parcela   && <span>Este valor es requerido</span>} */}
-                    {/* --- Campo para el Tipo de Identidad --- */}
-                    <div className="flex flex-col">
+                {errors.codigo_eapb && <span>Este valor es requerido</span>}
+
+
+                {/* --- Campo para el Tipo de Vivienda --- */}
+
+                <div className="flex flex-col">
+                    <label className="block text-sm font-medium mb-1">Tipo de Vivienda</label>
+                    <select
+                        {...register("id_tip_vivienda", { required: true })}
+                        className="bg-zinc-700 p-3 rounded-lg block w-full mb-3">
+
+                        <option value="">Seleccione un tipo de vivienda</option>
+                        {tiposVivienda.map((vivienda) => (
+                            <option key={vivienda.id_tip_vivienda} value={vivienda.id_tip_vivienda}>
+                                {vivienda.tipo_vivienda}
+                            </option>
+                        ))}
+                    </select>
+                </div>
+
+                {errors.id_tip_vivienda && <span>Este valor es requerido</span>}
+
+
+
+                <div className="flex flex-col">
                     <label className="block text-sm font-medium mb-1">Tipo de Cultivo</label>
-                <select
-                    {...register("id_tip_cultivos", { required: true })} 
-                    className="bg-zinc-700 p-3 rounded-lg block e-full mb-3"
-                >
-                    <option value="">Seleccione un tipo de cultivo</option>
-                    {TiposCultivo.map((tipo) => (
-                        <option key={tipo.id_tip_cultivo} value={tipo.id_tip_cultivo}>
-                            {tipo.des_cultivos}
-                        </option>
-                    ))}
-                </select> 
+                    <select
+                        {...register("id_tip_cultivos", { required: true })}
+                        className="bg-zinc-700 p-3 rounded-lg block e-full mb-3"
+                    >
+                        <option value="">Seleccione un tipo de cultivo</option>
+                        {TiposCultivo.map((tipo) => (
+                            <option key={tipo.id_tip_cultivo} value={tipo.id_tip_cultivo}>
+                                {tipo.des_cultivos}
+                            </option>
+                        ))}
+                    </select>
                 </div>
 
-                {/* <input
-                 type="text"
-                 placeholder="id_tip_cultivos"
-                 {...register("id_tip_cultivos", { required: true })}
-                 className="bg-zinc-700 p-3 rounded-lg block e-full mb-3"
-                />                              */}
-                
-
-                {/* <input
-                 type="text"
-                 placeholder="nivel_de_academico"
-                 {...register("nivel_de_academico", { required: true })}
-                 className="bg-zinc-700 p-3 rounded-lg block e-full mb-3"
-                />                              */}
                 <div className="flex flex-col">
-                <label className="block text-sm font-medium mb-1">Nivel Academico</label>
-                <select
-                    {...register("nivel_de_academico", { required: true })}
-                    className="bg-zinc-700 p-3 rounded-lg block w-full mb-3"
-                >
-                    <option value="">Seleccione un nivel académico</option>
-                    {nivelesAcademicos.map((nivel) => (
-                        <option key={nivel.id_nivel_acad} value={nivel.id_nivel_acad}>
-                            {nivel.des_nivel_academico}
-                        </option>
-                    ))}
-                </select>
-                {errors.nivel_de_academico   && <span>Este valor es requerido</span>}
+                    <label className="block text-sm font-medium mb-1">Nivel Academico</label>
+                    <select
+                        {...register("nivel_de_academico", { required: true })}
+                        className="bg-zinc-700 p-3 rounded-lg block w-full mb-3">
+
+                        <option value="">Seleccione un nivel académico</option>
+                        {nivelesAcademicos.map((nivel) => (
+                            <option key={nivel.id_nivel_acad} value={nivel.id_nivel_acad}>
+                                {nivel.des_nivel_academico}
+                            </option>
+                        ))}
+                    </select>
+                    {errors.nivel_de_academico && <span>Este valor es requerido</span>}
                 </div>
 
-                <input
-                 type="text"
-                 placeholder="estado_civil"
-                 {...register("estado_civil", { required: true })}
-                 className="bg-zinc-700 p-3 rounded-lg block e-full mb-3"
-                />                             
-                {errors.estado_civil   && <span>Este valor es requerido</span>}
-
-                {/* <input
-                 type="text"
-                 placeholder="regimen"
-                 {...register("regimen", { required: true })}
-                 className="bg-zinc-700 p-3 rounded-lg block e-full mb-3"
-                /> */}
-                {/* --- Campo para el Tipo de Identidad --- */}
                 <div className="flex flex-col">
-                <label className="block text-sm font-medium mb-1">Tipo de Regimen</label>
-                <select
-                    {...register("regimen", { required: true })} 
-                    className="bg-zinc-700 p-3 rounded-lg block e-full mb-3"
-                >
-                    <option value="">Seleccione un tipo regimen</option>
-                    {TiposRegimen.map((tipo) => (
-                        <option key={tipo.id_regimen} value={tipo.id_regimen}>
-                            {tipo.des_regimen}
-                        </option>
-                    ))}
-                </select>   
+                    <label className="block text-sm font-medium mb-1">Tipo de Regimen</label>
+                    <select
+                        {...register("regimen", { required: true })}
+                        className="bg-zinc-700 p-3 rounded-lg block e-full mb-3"
+                    >
+                        <option value="">Seleccione un tipo regimen</option>
+                        {TiposRegimen.map((tipo) => (
+                            <option key={tipo.id_regimen} value={tipo.id_regimen}>
+                                {tipo.des_regimen}
+                            </option>
+                        ))}
+                    </select>
                 </div>
-                                             
-                {errors.regimen  && <span>Este valor es requerido</span>}
+                {errors.regimen && <span>Este valor es requerido</span>}
 
-                <input
-                 type="text"
-                 placeholder="sexo_al_nacer"
-                 {...register("sexo_al_nacer", { required: true })}
-                 className="bg-zinc-700 p-3 rounded-lg block e-full mb-3"
-                />                             
-                {errors.sexo_al_nacer   && <span>Este valor es requerido</span>}
-
-
-
+                <div className="flex flex-col">
+                    <label className="block text-sm font-medium mb-1">Tipo de Basuras</label>
+                    <select
+                        {...register("id_disp_de_las_basuras", { required: true })}
+                        className="bg-zinc-700 p-3 rounded-lg block e-full mb-3"
+                    >
+                        <option value="">Seleccione un tipo basura</option>
+                        {TiposBasura.map((tipo) => (
+                            <option key={tipo.id_dis_basuras} value={tipo.id_dis_basuras}>
+                                {tipo.des_disp_basura}
+                            </option>
+                        ))}
+                    </select>
+                </div>
 
                 <div className="flex flex-col space-y-2">
                     <label className="text-sm font-medium">¿Habla otra lengua?</label>
@@ -492,33 +487,9 @@ export function DatperFormPage() {
                         </label>
                     </div>
                 </div>
+                {errors.habla_otra_lenjua && <span>Este valor es requerido</span>}
 
 
-
-
-
-                {/* <input
-                 type="checkbox"
-                 placeholder="habla_otra_lenjua"
-                 {...register("habla_otra_lenjua", { required: true })}
-                 className="bg-zinc-700 p-3 rounded-lg block e-full mb-3"
-                />                              */}
-                {errors.habla_otra_lenjua   && <span>Este valor es requerido</span>}
-
-                <input
-                 type="text"
-                 placeholder="comunidad_de_origen"
-                 {...register("comunidad_de_origen", { required: true })}
-                 className="bg-zinc-700 p-3 rounded-lg block e-full mb-3"
-                />                             
-                {errors.comunidad_de_origen    && <span>Este valor es requerido</span>}
-
-                {/* <input
-                 type="checkbox"
-                 placeholder="usa_medicina_tradicional"
-                 {...register("usa_medicina_tradicional", { required: true })}
-                 className="bg-zinc-700 p-3 rounded-lg block e-full mb-3"
-                />                              */}
                 <div className="flex flex-col space-y-2">
                     <label className="text-sm font-medium">¿Usa medicina tradicional?</label>
                     <div className="flex space-x-4">
@@ -543,13 +514,7 @@ export function DatperFormPage() {
                         </label>
                     </div>
                 </div>
-     
-                {/* <input
-                 type="checkbox"
-                 placeholder="cuenta_con_servicios_publico"
-                 {...register("cuenta_con_servicios_publico", { required: true })}
-                 className="bg-zinc-700 p-3 rounded-lg block e-full mb-3"
-                />                              */}
+
                 <div className="flex flex-col space-y-2">
                     <label className="text-sm font-medium">¿Cuenta con Servicios Públicos?</label>
                     <div className="flex space-x-4">
@@ -573,38 +538,38 @@ export function DatperFormPage() {
                         </label>
                     </div>
                 </div>
-                {errors.cuenta_con_servicios_publico    && <span>Este valor es requerido</span>}
-                  {/* --- Campo para el Tipo de Identidad --- */}
-                  <div className="flex flex-col">
-                  <label className="block text-sm font-medium mb-1">Tipo de Basuras</label>
-                <select
-                    {...register("id_disp_de_las_basuras", { required: true })} 
-                    className="bg-zinc-700 p-3 rounded-lg block e-full mb-3"
-                >
-                    <option value="">Seleccione un tipo basura</option>
-                    {TiposBasura.map((tipo) => (
-                        <option key={tipo.id_dis_basuras} value={tipo.id_dis_basuras}>
-                            {tipo.des_disp_basura}
-                        </option>
-                    ))}
-                </select>   
+                {errors.cuenta_con_servicios_publico && <span>Este valor es requerido</span>}
+
+                {/* Campos tipo checkbox */}
+                <div className="flex flex-col space-y-2">
+                    <label className="text-sm font-medium">¿Tiene parcela?</label>
+                    <div className="flex space-x-4">
+                        <label className="flex items-center space-x-2">
+                            <input
+                                type="radio"
+                                value="true"
+                                {...register("tiene_parcela", { required: true })}
+                                className="bg-zinc-700 p-3 rounded-lg"
+                            />
+                            <span>Sí</span>
+                        </label>
+                        <label className="flex items-center space-x-2">
+                            <input
+                                type="radio"
+                                value="false"
+                                {...register("tiene_parcela", { required: true })}
+                                className="bg-zinc-700 p-3 rounded-lg"
+                            />
+                            <span>No</span>
+                        </label>
+                    </div>
                 </div>
-                                             
-                {errors.id_disp_de_las_basuras    && <span>Este valor es requerido</span>}
-                
-                {/* <input
-                 type="text"
-                 placeholder="id_disp_de_las_basuras"
-                 {...register("id_disp_de_las_basuras", { required: true })}
-                 className="bg-zinc-700 p-3 rounded-lg block e-full mb-3"
-                />                             
-                {errors.id_disp_de_las_basuras    && <span>Este valor es requerido</span>} */}
-
-                <button className="gb-indigo-500 p-3 rounded-lg block w-full mt-3">
-                Guardar</button>
-            </form>
-
-           
+                {errors.id_disp_de_las_basuras && <span>Este valor es requerido</span>}
+                <div className="flex justify-center">
+                <button className="bg-blue-300 hover:bg-blue-400 text-black font-semibold py-4 px-10 rounded-lg mt-3">
+                    Actualizar
+                </button>
+            </div>
             {params.id && (
                 <div className="flex justify-end">
                     <button
@@ -621,7 +586,7 @@ export function DatperFormPage() {
                                     }
                                 })
 
-                                navigate('/Datper');
+                                navigate('/dashboard/Datper');
                             }
                         }}
                     >
@@ -629,6 +594,7 @@ export function DatperFormPage() {
                     </button>
                 </div>
             )}
+            </form> 
         </div>
     );
-}
+}    

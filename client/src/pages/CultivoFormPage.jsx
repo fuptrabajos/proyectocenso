@@ -35,7 +35,7 @@ export function CultivoFormPage() {
             })
         }
 
-        navigate("/Cultivo");
+        navigate("/dashboard/Cultivo");
 
     });
 
@@ -113,7 +113,7 @@ export function CultivoFormPage() {
                                 })
                                 console.log('ID para eliminar:', id);
 
-                                navigate('/TblTiposCultivo');
+                                navigate('/dashboard/Cultivo');
                             }
                         }}
                     >

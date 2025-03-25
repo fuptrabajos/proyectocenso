@@ -1,9 +1,13 @@
 from rest_framework import serializers
 from .models import Task
 from .models import TblTipIdentidad
-from .models import TblDatPer
-from .models import TblTiposDeVivienda, TblTiposCultivo, TblAfiliacion, TblNivelAcademico, TblRegimen, TblDisBasuras, TblTiposServiPubli
+from .models import TblDatPer, EncuestaHabitos
+from .models import TblTiposDeVivienda, TblTiposCultivo, TblAfiliacion, TblNivelAcademico, TblRegimen, TblDisBasuras, TblTiposServiPubli, TblSexo
 
+class EncuestaHabitosSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = EncuestaHabitos
+        fields = '__all__'
 
 class TaskSerializer(serializers.ModelSerializer):
     class Meta:
@@ -27,6 +31,7 @@ class TblDatPerSerializer(serializers.ModelSerializer):
     des_nivel_academico = serializers.CharField(source='nivel_de_academico.des_nivel_academico', read_only=True)
     des_regimen = serializers.CharField(source='regimen.des_regimen', read_only=True)
     des_disp_basura = serializers.CharField(source='id_disp_de_las_basuras.des_disp_basura', read_only=True)
+    descripcion = serializers.CharField(source='sexo_al_nacer.descripcion', read_only=True)
     
     class Meta: 
         model = TblDatPer
@@ -63,4 +68,9 @@ class TblDisBasurasSerializer(serializers.ModelSerializer):
 class TblTiposServiPubliSerializer(serializers.ModelSerializer):
     class Meta:
         model = TblTiposServiPubli
+        fields ='__all__'
+
+class TblSexoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = TblSexo
         fields ='__all__'

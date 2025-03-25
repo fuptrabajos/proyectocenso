@@ -23,6 +23,7 @@ router.register(r'TblNivelAcademico', views.TblNivelAcademicoView,'TblNivelAcade
 router.register(r'TblRegimen', views.TblRegimenView,'TblRegimen')
 router.register(r'TblDisBasuras', views.TblDisBasurasView,'TblDisBasuras')
 router.register(r'TblTiposServiPubli', views.TblTiposServiPubliView,'TblTiposServiPubli')
+router.register(r'TblSexo', views.TblSexoView,'TblSexo')
 
 
 

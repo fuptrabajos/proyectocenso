@@ -10,7 +10,7 @@ export function BasuraCard({TblDisBasuras}) {
         hover: cursor-pointer'
 
         onClick={() =>{
-            navigate(`/Basura/${TblDisBasuras.id_dis_basuras}`)
+            navigate(`/dashboard/Basura/${TblDisBasuras.id_dis_basuras}`)
         }}
         >
         <h1 className='font-bold uppercase'>{TblDisBasuras.des_disp_basura}</h1>

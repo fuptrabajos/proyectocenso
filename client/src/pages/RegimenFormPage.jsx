@@ -35,7 +35,7 @@ export function RegimenFormPage() {
             })
         }
 
-        navigate("/Regimen");
+        navigate("/dashboard/Regimen");
 
     });
 
@@ -92,7 +92,7 @@ export function RegimenFormPage() {
                                     }
                                 })
 
-                                navigate('/TblRegimen');
+                                navigate('/dashboard/Regimen');
                             }
                         }}
                     >

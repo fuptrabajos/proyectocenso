@@ -10,7 +10,7 @@ export function RegimenCard({TblRegimen}) {
         hover: cursor-pointer'
 
         onClick={() =>{
-            navigate(`/Regimen/${TblRegimen.id_regimen}`)
+            navigate(`/dashboard/Regimen/${TblRegimen.id_regimen}`)
         }}
         >
         <h1 className='font-bold uppercase'>{TblRegimen.des_regimen}</h1>
