@@ -1,3 +1,13 @@
+from rest_framework import generics, permissions
+from rest_framework.response import Response
+from rest_framework.views import APIView
+from rest_framework.decorators import api_view, permission_classes
+from django.contrib.auth.models import User, Group
+from .serializer import RegisterSerializer, UserMeSerializer
+from rest_framework.permissions import IsAuthenticated
+from tasks.permissions import IsAdminOrRegistradorCreateOnly
+
+
 from rest_framework import viewsets
 from .serializer import TaskSerializer, TblDatPerSerializer, TblTiposDeViviendaSerializer, TblAfiliacionSerializer, TblNivelAcademicoSerializer, TblRegimenSerializer, TblDisBasurasSerializer, TblTiposServiPubliSerializer, TblSexoSerializer
 from .serializer import TblTipIdentidadSerializer
@@ -9,6 +19,37 @@ from .models import TblDatPer, TblTiposCultivo,TblAfiliacion, TblNivelAcademico,
 
 
 # Create your views here.
+# Crear usuario (admin -> puede crear usuarios)
+class RegisterView(generics.CreateAPIView):
+    queryset = User.objects.all()
+    serializer_class = RegisterSerializer
+    permission_classes = [permissions.IsAuthenticated, permissions.IsAdminUser]  # solo admin puede crear por API
+
+# Listar roles/grupos (cualquier auth user puede leer; admin no necesario)
+class RoleListView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get(self, request):
+        groups = Group.objects.all().values("id", "name")
+        return Response(list(groups))
+
+
+# Info del usuario logueado
+@api_view(["GET"])
+@permission_classes([permissions.IsAuthenticated])
+def me(request):
+    serializer = UserMeSerializer(request.user)
+    # tomar primer grupo si existe
+    groups = serializer.data.get("groups", [])
+    role = groups[0] if groups else None
+    data = serializer.data
+    data["role"] = role
+    return Response(data)
+
+class TblDatPerViewSet(viewsets.ModelViewSet):
+    queryset = TblDatPer.objects.all()
+    serializer_class = TblDatPerSerializer
+    permission_classes = [IsAuthenticated, IsAdminOrRegistradorCreateOnly]
 
 class TaskView(viewsets.ModelViewSet):
     serializer_class = TaskSerializer

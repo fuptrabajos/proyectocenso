@@ -1,126 +1,190 @@
 import {useForm} from "react-hook-form";
 import { useEffect } from "react";
-import {createTblAfiliacion, deleteTblAfiliacion, updateTblAfiliacion , getTblAfiliacion} from '../api/Afiliacion.api';
+import {createTblAfiliacion, deleteTblAfiliacion, updateTblAfiliacion, getTblAfiliacion} from '../api/Afiliacion.api';
 import {useNavigate, useParams} from 'react-router-dom';
 import {toast} from 'react-hot-toast';
 
 export function AfiliacionFormPage() {
-    const{register, handleSubmit, formState: {errors}, setValue} = 
-    
-    useForm();
+    const {register, handleSubmit, formState: {errors}, setValue} = useForm();
     const navigate = useNavigate();
-    const params = useParams(); 
-    console.log(params);
+    const params = useParams();
 
     const onSubmit = handleSubmit(async data => {
-        console.log(data)
-        if(params.id) {
-            await updateTblAfiliacion(params.id, data)
-            toast.success('Eps actualizada con exito',{
-                position:"bottom-right",
-                style:{
-                    background:"#101010",
-                    color:"#fff",
+        try {
+            if(params.id) {
+                await updateTblAfiliacion(params.id, data);
+                toast.success('EPS actualizada con éxito', {
+                    position: "bottom-right",
+                    style: {
+                        background: "#047857", // Verde oscuro
+                        color: "#fff",
+                    }
+                });
+            } else {
+                await createTblAfiliacion(data);
+                toast.success('EPS creada con éxito', {
+                    position: "bottom-right",
+                    style: {
+                        background: "#047857", // Verde oscuro
+                        color: "#fff",
+                    }
+                });
+            }
+            navigate("/dashboard/Afiliacion");
+        } catch (error) {
+            toast.error('Error al guardar los datos', {
+                position: "bottom-right",
+                style: {
+                    background: "#DC2626", // Rojo
+                    color: "#fff",
                 }
-            })
-            
-        } else {
-            await createTblAfiliacion(data);
-            toast.success('Eps Creada con exito',{
-                position:"bottom-right",
-                style:{
-                    background:"#101010",
-                    color:"#fff",
-                }
-            })
+            });
         }
-
-        navigate("/dashboard/Afiliacion");
-
     });
 
-    useEffect(() =>{
-    async function loadAfiliacion() {
-        if (params.id) {
-           const {
-            data: {codigo_eapb, nombre_eapbAfiliacion, regimen}
-           }= await getTblAfiliacion(params.id);
-            setValue('codigo_eapb', codigo_eapb)
-            setValue('nombre_eapbAfiliacion', nombre_eapbAfiliacion)
-            setValue('regimen', regimen)
-
-            toast.success('Eps Actualizada exitosamente',{
-                position:"bottom-right",
-                style:{
-                    background:"#101010",
-                    color:"#fff",
+    useEffect(() => {
+        async function loadAfiliacion() {
+            if (params.id) {
+                try {
+                    const {
+                        data: {codigo_eapb, nombre_eapbAfiliacion, regimen}
+                    } = await getTblAfiliacion(params.id);
+                    
+                    setValue('codigo_eapb', codigo_eapb);
+                    setValue('nombre_eapbAfiliacion', nombre_eapbAfiliacion);
+                    setValue('regimen', regimen);
+                    
+                    toast.success('Datos cargados correctamente', {
+                        position: "bottom-right",
+                        style: {
+                            background: "#047857", // Verde oscuro
+                            color: "#fff",
+                        }
+                    });
+                } catch (error) {
+                    toast.error('Error al cargar los datos', {
+                        position: "bottom-right",
+                        style: {
+                            background: "#DC2626", // Rojo
+                            color: "#fff",
+                        }
+                    });
                 }
-            })
+            }
         }
-    }
-    loadAfiliacion()
-    },[]) 
+        loadAfiliacion();
+    }, [params.id, setValue]);
 
     return (
-        <div className="max-w-xl mx-auto">
-            <form onSubmit={onSubmit}>
-                
-            <label htmlFor="codigo_eapb" className="block text-white">Código de EAPB</label>
-                <input
-                 type="text"
-                 
-                 {...register("codigo_eapb", { required: true })} 
-                 className="bg-zinc-700 p-3 rounded-lg block e-full mb-3"
-                />
-                {errors.codigo_eapb && <span>Este valor es requerido</span>}
+        <div className="bg-white rounded-lg shadow-md p-6 max-w-xl mx-auto">
+            <h1 className="text-2xl font-bold text-gray-800 mb-6">
+                {params.id ? 'Editar EPS' : 'Crear Nueva EPS'}
+            </h1>
+            
+            <form onSubmit={onSubmit} className="space-y-4">
+                <div>
+                    <label htmlFor="codigo_eapb" className="block text-gray-700 font-medium mb-1">Código de EAPB</label>
+                    <input
+                        type="text"
+                        id="codigo_eapb"
+                        placeholder="Ingrese el código"
+                        {...register("codigo_eapb", { required: "Este campo es requerido" })} 
+                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500"
+                    />
+                    {errors.codigo_eapb && (
+                        <p className="text-red-500 text-sm mt-1">{errors.codigo_eapb.message}</p>
+                    )}
+                </div>
 
-                <label htmlFor="codigo_eapb" className="block text-white">Nombre de EAPB</label>
-                <input
-                 type="text"
-                 
-                 {...register("nombre_eapbAfiliacion", { required: true })}
-                className="bg-zinc-700 p-3 rounded-lg block e-full mb-3"
-                />
-                {errors.nombre_eapbAfiliacion && <span>Este valor es requerido</span>}
+                <div>
+                    <label htmlFor="nombre_eapbAfiliacion" className="block text-gray-700 font-medium mb-1">Nombre de EAPB</label>
+                    <input
+                        type="text"
+                        id="nombre_eapbAfiliacion"
+                        placeholder="Ingrese el nombre"
+                        {...register("nombre_eapbAfiliacion", { required: "Este campo es requerido" })}
+                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500"
+                    />
+                    {errors.nombre_eapbAfiliacion && (
+                        <p className="text-red-500 text-sm mt-1">{errors.nombre_eapbAfiliacion.message}</p>
+                    )}
+                </div>
 
-                <label htmlFor="codigo_eapb" className="block text-white">Regimen de EAPB</label>
-                <input
-                 type="text"
-                 
-                 {...register("regimen", { required: true })}
-                 className="bg-zinc-700 p-3 rounded-lg block e-full mb-3"
-                />                             
-                {errors.regimen && <span>Este valor es requerido</span>}                                              
+                {/* <div>
+                    <label htmlFor="regimen" className="block text-gray-700 font-medium mb-1">Régimen de EAPB</label>
+                    <input
+                        type="text"
+                        id="regimen"
+                        placeholder="Ingrese el régimen"
+                        {...register("regimen", { required: "Este campo es requerido" })}
+                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500"
+                    />
+                    {errors.regimen && (
+                        <p className="text-red-500 text-sm mt-1">{errors.regimen.message}</p>
+                    )}
+                </div> */}
 
-                <button className="gb-indigo-500 p-3 rounded-lg block w-full mt-3">
-                Guardar</button>
+                <div className="pt-2">
+                    <button 
+                        type="submit" 
+                        className="w-full bg-green-600 hover:bg-green-700 text-white py-2 px-4 rounded-lg transition-colors duration-200 flex items-center justify-center"
+                    >
+                        <svg className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                        </svg>
+                        {params.id ? 'Actualizar' : 'Guardar'}
+                    </button>
+                </div>
             </form>
 
-           
             {params.id && (
-                <div className="flex justify-end">
+                <div className="mt-6">
                     <button
-                        className="bg-red-500 p-3 rounded-lg  w-48 mt-3"
+                        className="w-full bg-red-600 hover:bg-red-700 text-white py-2 px-4 rounded-lg transition-colors duration-200 flex items-center justify-center"
                         onClick={async () => {
-                            const accepted = window.confirm('esta seguo de borrar el registro?');
+                            const accepted = window.confirm('¿Está seguro de eliminar este registro?');
                             if (accepted) {
-                                await deleteTblAfiliacion(params.id);
-                                toast.success('Eps eliminada', {
-                                    position: "bottom-right",
-                                    style: {
-                                        background: "#101010",
-                                        color: "#ffff",
-                                    }
-                                })
-
-                                navigate('/dashboard/Afiliacion');
+                                try {
+                                    await deleteTblAfiliacion(params.id);
+                                    toast.success('EPS eliminada correctamente', {
+                                        position: "bottom-right",
+                                        style: {
+                                            background: "#047857",
+                                            color: "#fff",
+                                        }
+                                    });
+                                    navigate('/dashboard/Afiliacion');
+                                } catch (error) {
+                                    toast.error('Error al eliminar', {
+                                        position: "bottom-right",
+                                        style: {
+                                            background: "#DC2626",
+                                            color: "#fff",
+                                        }
+                                    });
+                                }
                             }
                         }}
                     >
-                        Delete
+                        <svg className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v10M9 7h1m-1 4h1m4-4h-1m-1 4h1" />
+                        </svg>
+                        Eliminar
                     </button>
                 </div>
             )}
+
+            <div className="mt-4">
+                <button
+                    className="w-full bg-gray-500 hover:bg-gray-600 text-white py-2 px-4 rounded-lg transition-colors duration-200 flex items-center justify-center"
+                    onClick={() => navigate('/dashboard/Afiliacion')}
+                >
+                    <svg className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                    </svg>
+                    Volver
+                </button>
+            </div>
         </div>
     );
 }

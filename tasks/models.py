@@ -1,4 +1,6 @@
 from django.db import models
+from django.core.validators import MinValueValidator, MaxValueValidator
+
 
 # Create your models here.
 
@@ -11,17 +13,17 @@ class Task(models.Model):
     
 class TblTipIdentidad(models.Model):
     id_tipo_identidad = models.AutoField(primary_key=True)
-    tip_identidad = models.CharField(max_length=12)
+    tip_identidad = models.CharField(max_length=30)
     des_tip_identidad = models.CharField(max_length=50)
 
     def __str__(self):
         return self.des_tip_identidad
 
 class TblSexo(models.Model):
-    # Opciones fijas para el sexo
+
     OPCIONES_SEXO = [
-        ('Femenino', 'Femenino'),
-        ('Masculino', 'Masculino'),
+        ('FEMENINO', 'FEMENINO'),
+        ('FEMENINO', 'MASCULINO'),
     ]
 
     codigo = models.AutoField( primary_key=True)
@@ -32,7 +34,7 @@ class TblSexo(models.Model):
     )
 
     def __str__(self):
-        return self.get_descripcion()  # Muestra la etiqueta legible en lugar del valor almacenado  
+        return self.get_descripcion_display()  # Muestra la etiqueta legible en lugar del valor almacenado  
 
     class Meta:
         verbose_name = "Tipo sexo"
@@ -41,33 +43,83 @@ class TblSexo(models.Model):
    
 class TblDatPer(models.Model):
     id_paciente = models.AutoField(primary_key=True)
-    tip_iden_usu = models.ForeignKey('TblTipIdentidad', models.DO_NOTHING, db_column='des_tip_identidad', blank=True, null=True)
+    tip_iden_usu = models.ForeignKey('TblTipIdentidad', models.DO_NOTHING, db_column='id_tipo_identidad', blank=True, null=True)
     identificacion_usuario = models.CharField(max_length=12, blank=True, null=False)
     nombre_1 = models.CharField(max_length=20, blank=True, null=True)
     nombre_2 = models.CharField(max_length=20, blank=True, null=True)
     apellido_1 = models.CharField(max_length=20, blank=True, null=True)
     apellido_2 = models.CharField(max_length=20, blank=True, null=True)
     fec_nto = models.DateField(blank=True, null=True)
+    edad = models.PositiveIntegerField(
+        validators=[MinValueValidator(0), MaxValueValidator(120)], 
+        blank=True, 
+        null=True
+    )
     lugar_residencia = models.CharField(max_length=50, blank=True, null=True)
+    numero_familia = models.CharField(max_length=10,blank=True, null=True)
+    codigo_vereda = models.PositiveIntegerField(blank=True, null=True)
     etnia = models.CharField(max_length=50, blank=True, null=True)
     resguardo = models.CharField(max_length=50, blank=True, null=True)
     codigo_eapb = models.ForeignKey('TblAfiliacion', models.DO_NOTHING, db_column='nombre_eapbAfiliacion', blank=True, null=True)
-    lugar_de_trabajo = models.CharField(max_length=100, blank=True, null=True)
-    nombre_padre = models.CharField(max_length=20, blank=True, null=True)
-    nombre_madre = models.CharField(max_length=20, blank=True, null=True)
-    id_tip_vivienda = models.ForeignKey('TblTiposDeVivienda', models.DO_NOTHING, db_column='tipo_vivienda', blank=True, null=True)
+    # lugar_de_trabajo = models.CharField(max_length=100, blank=True, null=True)
+    id_tip_vivienda = models.ForeignKey('TblTiposDeVivienda', models.DO_NOTHING, db_column='id_tip_vivienda', blank=True, null=True)
     tiene_parcela = models.BooleanField()
-    id_tip_cultivos = models.ForeignKey('TblTiposCultivo', models.DO_NOTHING, db_column='id_tip_cultivos', blank=True, null=True)
-    nivel_de_academico = models.ForeignKey('TblNivelAcademico',models.DO_NOTHING, db_column='des_nivel_academico', blank=True, null=True)
+    id_tip_cultivos = models.ForeignKey('TblTiposCultivo', models.DO_NOTHING, db_column='id_tip_cultivo', blank=True, null=True)
+    nivel_de_academico = models.ForeignKey('TblNivelAcademico',models.DO_NOTHING, db_column='id_nivel_acad', blank=True, null=True)
     estado_civil = models.CharField(max_length=50, blank=True, null=True)
-    regimen = models.ForeignKey('TblRegimen',models.DO_NOTHING, db_column='des_regimen', blank=True, null=True )
-    sexo_al_nacer = models.ForeignKey('TblSexo', models.DO_NOTHING,  db_column='descripcion', blank=True, null=True)
+    regimen = models.ForeignKey('TblRegimen',models.DO_NOTHING, db_column='id_regimen', blank=True, null=True )
+    sexo_al_nacer = models.ForeignKey('TblSexo', models.DO_NOTHING,db_column='codigo', blank=True, null=True)
     habla_otra_lenjua = models.BooleanField()
     comunidad_de_origen = models.CharField(max_length=255, blank=True, null=True)
     usa_medicina_tradicional = models.BooleanField()
     cuenta_con_servicios_publico = models.BooleanField()
-    id_disp_de_las_basuras = models.ForeignKey('TblDisBasuras',models.DO_NOTHING, db_column='id_disp_de_las_basuras', blank=True, null=True )
-    numero_familia = models.CharField(max_length=4,blank=True, null=True)
+    id_disp_de_las_basuras = models.ForeignKey('TblDisBasuras',models.DO_NOTHING, db_column='id_dis_basuras', blank=True, null=True )
+    esta_vivo = models.BooleanField(default=True,verbose_name="¿Está vivo?"
+    )
+    def save(self, *args, **kwargs):
+        # Diccionario con todas las veredas y sus códigos
+        VEREDAS = {
+            "20 DE JULIO": 1,
+            "ALTO ANAMBIO": 2,
+            "AMBIRO": 3,
+            "CAMPAMENTO": 4,
+            "CHAPIO": 5,
+            "CUARE": 6,
+            "HATO VIEJO": 7,
+            "HISPALA": 8,
+            "PATIA": 9,
+            "PATICO": 10,
+            "PULULO": 11,
+            "PURACE": 12,
+            "TABIO": 13,
+        }
+
+        # 1️⃣ Si hay lugar de residencia, asignar el código
+        if self.lugar_residencia:
+            self.codigo_vereda = VEREDAS.get(self.lugar_residencia.upper().strip())
+
+        # 2️⃣ Si no tiene número de familia, generarlo
+        if not self.numero_familia and self.codigo_vereda:
+            # Buscar el último consecutivo en esa vereda
+            ultimo = TblDatPer.objects.filter(
+                codigo_vereda=self.codigo_vereda
+            ).order_by("-numero_familia").first()
+
+            if ultimo and "-" in ultimo.numero_familia:
+                consecutivo = int(ultimo.numero_familia.split("-")[1]) + 1
+            else:
+                consecutivo = 1
+
+            # Formato: 01-0001
+            self.numero_familia = f"{int(self.codigo_vereda):02d}-{consecutivo:04d}"
+
+        super().save(*args, **kwargs)
+
+
+
+    def __str__(self):
+        estado = "Vivo" if self.esta_vivo else "Fallecido"
+        return f"{self.identificacion_usuario} - {estado}"
 
     def __str__(self):
         return str(self.identificacion_usuario)
@@ -76,7 +128,6 @@ class TblAfiliacion(models.Model):
     id_eapb = models.AutoField( primary_key=True)
     codigo_eapb = models.CharField(max_length=7)
     nombre_eapbAfiliacion = models.CharField(max_length=255)
-    regimen = models.CharField(max_length=20)
 
     def __str__(self):
         return self.nombre_eapbAfiliacion
@@ -85,11 +136,10 @@ class TblAfiliacion(models.Model):
 
 class TblTiposDeVivienda(models.Model):
     TIPO_VIVIENDA_CHOICES = [
-        ('tradicional', 'Tradicional'),
-        ('moderna', 'Moderna'),
-        ('propia', 'Propia'),
-        ('arrendada', 'Arrendada'),
-        ('familiar', 'Familiar'),
+        ('OTRA', 'OTRA'),
+        ('PROPIA', 'PROPIA'),
+        ('ALQUILADA', 'ALQUILADA'),
+        ('FAMILIAR', 'FAMILIAR'),
     ]
 
     id_tip_vivienda = models.AutoField(primary_key=True)  # Campo automático para el ID
@@ -120,14 +170,17 @@ class TblNivelAcademico(models.Model):
    
     NIVEL_ACADEMICO_CHOICES = [
         ('des_nivel_academico', 'des_nivel_academico'),
-        ('primaria', 'primaria'),
-        ('secundaria', 'secundaria'),
-        ('pregrado', 'pregardo'),
-        ('ninguno', 'ninguno'),
-        ('licenciatura', 'licenciatura'),
-        ('maestria', 'maestria'),
-        ('doctorado', 'doctorado'),
-               
+        ('BASICA PRIMARIA', 'BASICA PRIMARIA'),
+        ('BASICA SECUNDARIA', 'BASICA SECUNDARIA'),
+        ('BASICA MEDIA', 'BASICA MEDIA'),
+        ('PREESCOLAR', 'PREESCOLAR'),
+        ('TECNICO', 'TECNICO'),
+        ('TECNOLOGIA', 'TECNOLOGIA'),
+        ('PROFESIONAL', 'PROFESIONAL'),
+        ('ESPECIALIZACION', 'ESPECIALIZACION'),
+        ('MAGISTER', 'MAGISTER'),
+        ('DOCTORADO', 'DOCTORADO'),    
+        ('NINGUNA', 'NINGUNA'),   
     ]
     id_nivel_acad = models.AutoField( primary_key=True)
     des_nivel_academico = models.CharField (max_length=30, 

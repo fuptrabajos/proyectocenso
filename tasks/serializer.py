@@ -1,8 +1,43 @@
 from rest_framework import serializers
 from .models import Task
+from django.contrib.auth.models import User, Group
 from .models import TblTipIdentidad
 from .models import TblDatPer, EncuestaHabitos
 from .models import TblTiposDeVivienda, TblTiposCultivo, TblAfiliacion, TblNivelAcademico, TblRegimen, TblDisBasuras, TblTiposServiPubli, TblSexo
+
+class RegisterSerializer(serializers.ModelSerializer):
+    password = serializers.CharField(write_only=True)
+    group = serializers.CharField(write_only=True, required=False)  # rol enviado desde React
+
+    class Meta:
+        model = User
+        fields = ["username", "email", "password", "group"]
+
+    def create(self, validated_data):
+        group_name = validated_data.pop("group", None)
+        password = validated_data.pop("password")
+        user = User(**validated_data)
+        user.set_password(password)
+
+        # si el rol es admin, opcionalmente darle acceso al admin django
+        if group_name == "admin":
+            user.is_staff = True
+
+        user.save()
+
+        if group_name:
+            group, _ = Group.objects.get_or_create(name=group_name)
+            user.groups.add(group)
+
+        return user
+
+
+class UserMeSerializer(serializers.ModelSerializer):
+    groups = serializers.SlugRelatedField(many=True, read_only=True, slug_field="name")
+
+    class Meta:
+        model = User
+        fields = ["id", "username", "email", "groups"]
 
 class EncuestaHabitosSerializer(serializers.ModelSerializer):
     class Meta:
@@ -32,6 +67,8 @@ class TblDatPerSerializer(serializers.ModelSerializer):
     des_regimen = serializers.CharField(source='regimen.des_regimen', read_only=True)
     des_disp_basura = serializers.CharField(source='id_disp_de_las_basuras.des_disp_basura', read_only=True)
     descripcion = serializers.CharField(source='sexo_al_nacer.descripcion', read_only=True)
+    des_tip_identidad = serializers.CharField(source='tip_iden_usu.des_tip_identidad', read_only=True)
+    nombre_completo = serializers.ReadOnlyField()
     
     class Meta: 
         model = TblDatPer

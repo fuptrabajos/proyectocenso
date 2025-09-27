@@ -1,22 +1,121 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import { getAllTblDatPer } from '../api/ReporteComunero.api';
+import { Doughnut } from 'react-chartjs-2';
+import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
 
-const ImageComponent = () => {
-  return (
-    <div style={{ textAlign: 'center', margin: '20px' }}>
-      <h1>Mapa de Puracé, Cauca</h1>
-      <iframe
-        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3989.234567890123!2d-76.3660059!3d2.366458!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMsKwMjInMDAuMCJOIDc2wrAyMSc1Ny42Ilc!5e0!3m2!1ses!2sco!4v1631234567890!5m2!1ses!2sco"
-        width="80%"
-        height="450"
-        style={{ border: '0', borderRadius: '10px', boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)' }}
-        allowFullScreen=""
-        loading="lazy"
-      ></iframe>
-      <p style={{ marginTop: '10px', fontSize: '14px', color: '#555' }}>
-        Mapa del municipio de Puracé, Cauca, Colombia.
-      </p>
-    </div>
-  );
+// Registrar componentes necesarios de Chart.js
+ChartJS.register(ArcElement, Tooltip, Legend);
+
+const GenderChart = () => {
+    const [comuneros, setComuneros] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const response = await getAllTblDatPer();
+                setComuneros(response.data);
+            } catch (error) {
+                console.error("Error fetching data: ", error);
+                setError("Error al cargar los datos. Intente nuevamente.");
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchData();
+    }, []);
+
+    if (loading) {
+        return <div className="p-4">Cargando datos...</div>;
+    }
+
+    if (error) {
+        return <div className="p-4 text-red-500">{error}</div>;
+    }
+
+    // Contar géneros
+    const countGenders = () => {
+        return comuneros.reduce((counts, comunero) => {
+            const genero = comunero.descripcion?.toLowerCase() || "otros";
+            if (genero === 'masculino') counts.masculino++;
+            else if (genero === 'femenino') counts.femenino++;
+            else counts.otros++;
+            return counts;
+        }, { masculino: 0, femenino: 0, otros: 0 });
+    };
+
+    const genderCounts = countGenders();
+    const totalComuneros = comuneros.length;
+    
+
+    // Datos para el gráfico
+    const data = {
+        labels: ['Masculino', 'Femenino', 'Otros'],
+        datasets: [
+            {
+                data: [genderCounts.masculino, genderCounts.femenino, genderCounts.otros],
+                backgroundColor: [
+                    'rgba(54, 162, 235, 0.7)',
+                    'rgba(255, 99, 132, 0.7)',
+                    'rgba(255, 206, 86, 0.7)'
+                ],
+                borderColor: [
+                    'rgba(54, 162, 235, 1)',
+                    'rgba(255, 99, 132, 1)',
+                    'rgba(255, 206, 86, 1)'
+                ],
+                borderWidth: 2,
+                cutout: '50%',
+            },
+        ],
+    };  
+
+    // Opciones del gráfico
+    const options = {
+        responsive: true,
+        plugins: {
+            legend: { position: 'top' },
+            title: {
+                display: true,
+                text: 'Distribución de Géneros',
+                font: { size: 26 }
+                
+            },
+            tooltip: {
+                callbacks: {
+                    label: function(context) {
+                        const label = context.label || '';
+                        const value = context.raw ?? 0;
+                        const percentage = totalComuneros > 0 ? Math.round((value / totalComuneros) * 100) : 0;
+                        return `${label}: ${value} (${percentage}%)`;
+                    }
+                }
+            }
+        },
+    };
+
+    return (
+        <div className="p-4">
+            <h1 className="text-2xl font-bold mb-6">Distribución de Géneros de Comuneros</h1>
+            <div className="bg-white p-6 rounded-lg shadow-md">
+                <div className="w-full md:w-1/2 mx-auto">
+                    <Doughnut data={data} options={options} />
+                </div>
+                <div className="mt-6 text-center">
+                    <p className="text-lg">
+                        <span className="font-semibold">Total registros:</span> {totalComuneros}
+                    </p>
+                    <p className="text-lg">
+                        <span className="font-semibold">Masculino:</span> {genderCounts.masculino} | 
+                        <span className="font-semibold"> Femenino:</span> {genderCounts.femenino} | 
+                        <span className="font-semibold"> Otros:</span> {genderCounts.otros}
+                    </p>
+                </div>
+            </div>
+        </div>
+    );
 };
 
-export default ImageComponent;
+export default GenderChart;
