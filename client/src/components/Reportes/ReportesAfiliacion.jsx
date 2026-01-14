@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { getAllTblAfiliacion, getAllTblDatPer } from '../../api/ReporteComuneros.api';
+import { getAfiliacionStatsRapido } from '../../api/ReporteAfiliacion.api'; // CAMBIAR IMPORT
 
 export function ReportesAfiliacion() {
     const [afiliacionesConConteo, setAfiliacionesConConteo] = useState([]);
@@ -8,62 +8,26 @@ export function ReportesAfiliacion() {
     const [totalGeneral, setTotalGeneral] = useState(0);
     const [error, setError] = useState(null);
 
+    // REEMPLAZAR TODO EL useEffect CON ESTO:
     useEffect(() => {
         const fetchData = async () => {
             try {
                 setLoading(true);
                 
-                // Obtener datos de afiliaciones y personas
-                const [afiliacionesResponse, personasResponse] = await Promise.all([
-                    getAllTblAfiliacion(),
-                    getAllTblDatPer()
-                ]);
-
-                const afiliaciones = afiliacionesResponse.data;
-                const personas = personasResponse.data;
-
-                // Crear un mapa de conteo por ID de afiliación
-                const conteoMap = {};
-                let totalPersonas = 0;
-
-                // Contar personas por afiliación
-                personas.forEach(persona => {
-                    const idAfiliacion = persona.codigo_eapb;
-                    if (idAfiliacion) {
-                        conteoMap[idAfiliacion] = (conteoMap[idAfiliacion] || 0) + 1;
-                        totalPersonas++;
-                    }
-                });
-
-                // Combinar datos de afiliaciones con conteos
-                const afiliacionesConConteo = afiliaciones.map(afiliacion => {
-                    const conteo = conteoMap[afiliacion.id_eapb] || 0;
-                    return {
-                        ...afiliacion,
-                        total_personas: conteo
-                    };
-                });
-
-                // Ordenar por cantidad de personas (descendente) y filtrar las que tienen personas
-                const afiliacionesOrdenadas = afiliacionesConConteo
-                    .filter(afiliacion => afiliacion.total_personas > 0)
-                    .sort((a, b) => b.total_personas - a.total_personas);
-
-                // Contar personas sin afiliación
-                const personasSinAfiliacion = personas.filter(persona => !persona.codigo_eapb).length;
+                // Usar endpoint súper optimizado
+                const response = await getAfiliacionStatsRapido();
+                const { afiliaciones, total_general } = response.data;
                 
-                if (personasSinAfiliacion > 0) {
-                    afiliacionesOrdenadas.push({
-                        id_eapb: null,
-                        codigo_eapb: 'N/A',
-                        nombre_eapbAfiliacion: 'Sin Afiliación',
-                        total_personas: personasSinAfiliacion
-                    });
-                    totalPersonas += personasSinAfiliacion;
-                }
-
-                setAfiliacionesConConteo(afiliacionesOrdenadas);
-                setTotalGeneral(totalPersonas);
+                // Mapear al formato que espera tu componente
+                const afiliacionesFormateadas = afiliaciones.map((item, index) => ({
+                    id_eapb: index + 1,
+                    codigo_eapb: item.codigo_eapb__codigo_eapb,
+                    nombre_eapbAfiliacion: item.codigo_eapb__nombre_eapbAfiliacion,
+                    total_personas: item.total_personas
+                }));
+                
+                setAfiliacionesConConteo(afiliacionesFormateadas);
+                setTotalGeneral(total_general);
                 setError(null);
                 
             } catch (error) {

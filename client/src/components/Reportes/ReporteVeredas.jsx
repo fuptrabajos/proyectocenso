@@ -1,5 +1,5 @@
 import { useEffect, useState, useMemo } from 'react';
-import { getAllTblDatPer } from '../../api/ReporteComunero.api';
+import { getAllTblDatPer } from '../../api/ReporteVeredas.api';
 import * as XLSX from 'xlsx';
 
 export function ReporteVeredas() {

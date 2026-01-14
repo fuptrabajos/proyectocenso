@@ -1,20 +1,54 @@
-import { useEffect, useState, useMemo } from 'react';
-import { getAllTblDatPer } from '../../api/ReporteComunero.api';
+import { useEffect, useState, useCallback } from 'react';
+import { getTblDatPerPaginated, exportTblDatPer } from '../../api/ReporteComunero.api';
 import * as XLSX from 'xlsx';
 
 export function ReportesComunero() {
     const [comuneros, setComuneros] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [exporting, setExporting] = useState(false);
     const [searchTerm, setSearchTerm] = useState('');
+    const [deferredSearch, setDeferredSearch] = useState('');
     const [genderFilter, setGenderFilter] = useState('todos');
     const [currentPage, setCurrentPage] = useState(1);
     const [itemsPerPage, setItemsPerPage] = useState(25);
+    const [totalCount, setTotalCount] = useState(0);
+    const [stats, setStats] = useState({
+        total: 0,
+        masculino: 0,
+        femenino: 0,
+        conEps: 0,
+        sinEps: 0
+    });
 
+    // Debounce búsqueda
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            setDeferredSearch(searchTerm);
+            setCurrentPage(1);
+        }, 500);
+        return () => clearTimeout(timer);
+    }, [searchTerm]);
+
+    // Cargar datos
     useEffect(() => {
         const fetchData = async () => {
+            setLoading(true);
             try {
-                const response = await getAllTblDatPer();
-                setComuneros(response.data);
+                const params = {
+                    page: currentPage,
+                    page_size: itemsPerPage,
+                    search: deferredSearch,
+                    gender: genderFilter
+                };
+
+                const response = await getTblDatPerPaginated(params);
+                
+                setComuneros(response.data.results);
+                setTotalCount(response.data.count);
+                
+                if (response.data.stats) {
+                    setStats(response.data.stats);
+                }
             } catch (error) {
                 console.error("Error fetching data: ", error);
             } finally {
@@ -22,95 +56,66 @@ export function ReportesComunero() {
             }
         };
         fetchData();
-    }, []);
+    }, [currentPage, itemsPerPage, deferredSearch, genderFilter]);
 
-    // Filtrar y paginar datos
-    const { filteredData, paginatedData, stats, pagination } = useMemo(() => {
-        // Filtros
-        const filtered = comuneros.filter(comunero => {
-            const searchValue = searchTerm.toLowerCase();
-            const matchesSearch = !searchTerm || 
-                comunero.identificacion_usuario?.toLowerCase().includes(searchValue) ||
-                comunero.nombre_1?.toLowerCase().includes(searchValue) ||
-                comunero.apellido_1?.toLowerCase().includes(searchValue);
+    // Exportar Excel
+    const exportToExcel = useCallback(async () => {
+        setExporting(true);
+        
+        try {
+            const params = {
+                search: deferredSearch,
+                gender: genderFilter
+            };
+
+            const response = await exportTblDatPer(params);
             
-            const matchesGender = genderFilter === 'todos' || 
-                comunero.descripcion?.toLowerCase() === genderFilter;
+            const dataToExport = response.data.map(comunero => ({
+                'ID': comunero.id_paciente,
+                'Tipo Identidad': comunero.des_tip_identidad,
+                'Número Documento': comunero.identificacion_usuario,
+                'Primer Nombre': comunero.nombre_1,
+                'Segundo Nombre': comunero.nombre_2,
+                'Primer Apellido': comunero.apellido_1,
+                'Segundo Apellido': comunero.apellido_2,
+                'Sexo': comunero.descripcion,
+                'Fecha Nacimiento': comunero.fec_nto,
+                'Edad': comunero.edad,
+                'Lugar Vereda': comunero.lugar_residencia,
+                'Codigo Vereda': comunero.codigo_vereda,
+                'Numero de Familia': comunero.numero_familia,
+                'Etnia': comunero.etnia,
+                'Resguardo': comunero.resguardo,
+                'EPS': comunero.nombre_eapbAfiliacion,
+                'Tipo Vivienda': comunero.tipo_vivienda,
+                'Parcela': comunero.tiene_parcela ? "Sí" : "No",
+                'Cultivo': comunero.des_cultivos,
+                'Nivel Académico': comunero.des_nivel_academico,
+                'Estado Civil': comunero.estado_civil,
+                'Régimen': comunero.des_regimen,
+                'Habla otra lengua': comunero.habla_otra_lenjua ? "Sí" : "No",
+                'Comunidad Origen': comunero.comunidad_de_origen,
+                'Medicina Tradicional': comunero.usa_medicina_tradicional ? "Sí" : "No",
+                'Servicios Públicos': comunero.cuenta_con_servicios_publico ? "Sí" : "No",
+                'Basuras': comunero.des_disp_basura,
+                'Estado de vida': comunero.esta_vivo
+            }));
+
+            const ws = XLSX.utils.json_to_sheet(dataToExport);
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, "Comuneros");
             
-            return matchesSearch && matchesGender;
-        });
-
-        // Estadísticas
-        const stats = {
-            total: comuneros.length,
-            masculino: comuneros.filter(p => p.descripcion?.toLowerCase() === 'masculino').length,
-            femenino: comuneros.filter(p => p.descripcion?.toLowerCase() === 'femenino').length,
-            conEps: comuneros.filter(p => p.nombre_eapbAfiliacion).length,
-            sinEps: comuneros.filter(p => !p.nombre_eapbAfiliacion).length
-        };
-
-        // Paginación
-        const totalPages = Math.ceil(filtered.length / itemsPerPage);
-        const startIndex = (currentPage - 1) * itemsPerPage;
-        const paginated = filtered.slice(startIndex, startIndex + itemsPerPage);
-        
-        const pagination = {
-            totalPages,
-            startRecord: startIndex + 1,
-            endRecord: Math.min(startIndex + itemsPerPage, filtered.length),
-            totalFiltered: filtered.length
-        };
-
-        return { filteredData: filtered, paginatedData: paginated, stats, pagination };
-    }, [comuneros, searchTerm, genderFilter, currentPage, itemsPerPage]);
-
-    // Reset página al cambiar filtros
-    useEffect(() => {
-        setCurrentPage(1);
-    }, [searchTerm, genderFilter]);
-
-    const exportToExcel = () => {
-        const dataToExport = filteredData.map(comunero => ({
-            'ID': comunero.id_paciente,
-            'Tipo Identidad': comunero.des_tip_identidad,
-            'Número Documento': comunero.identificacion_usuario,
-            'Primer Nombre': comunero.nombre_1,
-            'Segundo Nombre': comunero.nombre_2,
-            'Primer Apellido': comunero.apellido_1,
-            'Segundo Apellido': comunero.apellido_2,
-            'Sexo': comunero.descripcion,
-            'Fecha Nacimiento': comunero.fec_nto,
-            'Edad': comunero.edad,
-            'Lugar Vereda': comunero.lugar_residencia,
-            'Codigo Vereda': comunero.codigo_vereda,
-            'Numero de Familia': comunero.numero_familia,
-            'Etnia': comunero.etnia,
-            'Resguardo': comunero.resguardo,
-            'EPS': comunero.nombre_eapbAfiliacion,
-            'Tipo Vivienda': comunero.tipo_vivienda,
-            'Parcela': comunero.tiene_parcela ? "Sí" : "No",
-            'Cultivo': comunero.des_cultivos,
-            'Nivel Académico': comunero.des_nivel_academico,
-            'Estado Civil': comunero.estado_civil,
-            'Régimen': comunero.des_regimen,
-            'Habla otra lengua': comunero.habla_otra_lenjua ? "Sí" : "No",
-            'Comunidad Origen': comunero.comunidad_de_origen,
-            'Medicina Tradicional': comunero.usa_medicina_tradicional ? "Sí" : "No",
-            'Servicios Públicos': comunero.cuenta_con_servicios_publico ? "Sí" : "No",
-            'Basuras': comunero.des_disp_basura,
-            'Estado de vida': comunero.esta_vivo
-        }));
-
-        const ws = XLSX.utils.json_to_sheet(dataToExport);
-        const wb = XLSX.utils.book_new();
-        XLSX.utils.book_append_sheet(wb, ws, "Comuneros");
-        
-        const fileName = genderFilter === 'todos' 
-            ? `comuneros_${filteredData.length}.xlsx` 
-            : `comuneros_${genderFilter}_${filteredData.length}.xlsx`;
-        
-        XLSX.writeFile(wb, fileName);
-    };
+            const fileName = genderFilter === 'todos' 
+                ? `comuneros_${dataToExport.length}.xlsx` 
+                : `comuneros_${genderFilter}_${dataToExport.length}.xlsx`;
+            
+            XLSX.writeFile(wb, fileName);
+        } catch (error) {
+            console.error("Error exportando: ", error);
+        } finally {
+            setExporting(false);
+        }
+    }, [deferredSearch, genderFilter]);
 
     const Badge = ({ condition, trueColor = "green", falseColor = "gray", children }) => (
         <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
@@ -122,7 +127,11 @@ export function ReportesComunero() {
         </span>
     );
 
-    if (loading) {
+    const totalPages = Math.ceil(totalCount / itemsPerPage);
+    const startRecord = totalCount > 0 ? (currentPage - 1) * itemsPerPage + 1 : 0;
+    const endRecord = Math.min(currentPage * itemsPerPage, totalCount);
+
+    if (loading && currentPage === 1) {
         return (
             <div className="flex items-center justify-center h-64">
                 <div className="text-center">
@@ -143,15 +152,26 @@ export function ReportesComunero() {
                 </div>
                 <button 
                     onClick={exportToExcel}
-                    disabled={!filteredData.length}
+                    disabled={totalCount === 0 || exporting}
                     className={`flex items-center px-4 py-2 rounded-lg text-white transition-colors ${
-                        filteredData.length ? 'bg-green-600 hover:bg-green-700' : 'bg-gray-400 cursor-not-allowed'
+                        exporting ? 'bg-yellow-500' :
+                        totalCount > 0 ? 'bg-green-600 hover:bg-green-700' : 
+                        'bg-gray-400 cursor-not-allowed'
                     }`}
                 >
-                    <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
-                    </svg>
-                    Exportar {filteredData.length}
+                    {exporting ? (
+                        <>
+                            <div className="animate-spin rounded-full h-5 w-5 border-2 border-white border-t-transparent mr-2"></div>
+                            Exportando...
+                        </>
+                    ) : (
+                        <>
+                            <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                            </svg>
+                            Exportar {totalCount}
+                        </>
+                    )}
                 </button>
             </div>
 
@@ -197,7 +217,10 @@ export function ReportesComunero() {
                 <select
                     className="p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500"
                     value={genderFilter}
-                    onChange={(e) => setGenderFilter(e.target.value)}
+                    onChange={(e) => {
+                        setGenderFilter(e.target.value);
+                        setCurrentPage(1);
+                    }}
                 >
                     <option value="todos">Todos</option>
                     <option value="masculino">Masculino</option>
@@ -222,10 +245,10 @@ export function ReportesComunero() {
             {/* Info */}
             <div className="flex justify-between items-center mb-4 text-sm text-gray-600">
                 <span>
-                    Mostrando {pagination.startRecord} - {pagination.endRecord} de {pagination.totalFiltered.toLocaleString()}
+                    Mostrando {startRecord} - {endRecord} de {totalCount.toLocaleString()}
                     {genderFilter !== 'todos' && ` (${genderFilter})`}
                 </span>
-                <span>Página {currentPage} de {pagination.totalPages}</span>
+                <span>Página {currentPage} de {totalPages}</span>
             </div>
             
             {/* Tabla */}
@@ -264,8 +287,14 @@ export function ReportesComunero() {
                         </tr>
                     </thead>
                     <tbody className="bg-white divide-y divide-gray-200">
-                        {paginatedData.length > 0 ? (
-                            paginatedData.map((comunero) => (
+                        {loading ? (
+                            <tr>
+                                <td colSpan="28" className="px-6 py-8 text-center">
+                                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-green-500 mx-auto"></div>
+                                </td>
+                            </tr>
+                        ) : comuneros.length > 0 ? (
+                            comuneros.map((comunero) => (
                                 <tr key={comunero.id_paciente} className="hover:bg-gray-50">
                                     <td className="px-4 py-3 text-sm">{comunero.id_paciente}</td>
                                     <td className="px-4 py-3 text-sm">{comunero.des_tip_identidad}</td>
@@ -315,12 +344,11 @@ export function ReportesComunero() {
                                     </td>
                                     <td className="px-4 py-3 text-sm">{comunero.des_disp_basura}</td>
                                     <td className="px-4 py-3 text-sm">{comunero.esta_vivo ? "Vivo" : "Fallecido"}</td>
-                                    
                                 </tr>
                             ))
                         ) : (
                             <tr>
-                                <td colSpan="25" className="px-6 py-8 text-center text-gray-500">
+                                <td colSpan="28" className="px-6 py-8 text-center text-gray-500">
                                     No se encontraron resultados
                                 </td>
                             </tr>
@@ -330,10 +358,10 @@ export function ReportesComunero() {
             </div>
 
             {/* Paginación */}
-            {pagination.totalPages > 1 && (
+            {totalPages > 1 && (
                 <div className="mt-6 flex justify-between items-center">
                     <span className="text-sm text-gray-700">
-                        {pagination.startRecord} - {pagination.endRecord} de {pagination.totalFiltered.toLocaleString()}
+                        {startRecord} - {endRecord} de {totalCount.toLocaleString()}
                     </span>
                     
                     <div className="flex space-x-2">
@@ -347,9 +375,9 @@ export function ReportesComunero() {
                             Anterior
                         </button>
                         
-                        {Array.from({ length: Math.min(5, pagination.totalPages) }, (_, i) => {
+                        {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
                             const pageNum = Math.max(1, currentPage - 2) + i;
-                            if (pageNum > pagination.totalPages) return null;
+                            if (pageNum > totalPages) return null;
                             return (
                                 <button
                                     key={pageNum}
@@ -366,11 +394,11 @@ export function ReportesComunero() {
                         })}
                         
                         <button
-                            onClick={() => setCurrentPage(prev => Math.min(pagination.totalPages, prev + 1))}
-                            disabled={currentPage === pagination.totalPages}
+                            onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
+                            disabled={currentPage === totalPages}
                             className={`px-3 py-2 rounded text-sm ${
-                                currentPage === pagination.totalPages ? 'bg-gray-100 text-gray-400 cursor-not-allowed' : 'bg-white border hover:bg-gray-50'
-            }`}
+                                currentPage === totalPages ? 'bg-gray-100 text-gray-400 cursor-not-allowed' : 'bg-white border hover:bg-gray-50'
+                            }`}
                         >
                             Siguiente
                         </button>
