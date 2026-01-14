@@ -10,7 +10,7 @@ export function ServiciosCard({TblTiposServiPubli}) {
         hover: cursor-pointer'
 
         onClick={() =>{
-            navigate(`/Servicios/${TblTiposServiPubli.id_tip_ser_publi}`)
+            navigate(`/dashboard/Servicios/${TblTiposServiPubli.id_tip_ser_publi}`)
         }}
         >
         <h1 className='font-bold uppercase'>{TblTiposServiPubli.des_servicio}</h1>

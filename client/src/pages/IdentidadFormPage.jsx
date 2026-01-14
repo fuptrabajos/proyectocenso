@@ -1,105 +1,175 @@
 import {useForm} from "react-hook-form";
 import { useEffect } from "react";
-import {createTblTipIdentidad, deleteTblTipIdentidad, updateTblTipIdentidad , getTblTipIdentidad} from '../api/Identidad.api';
+import {createTblTipIdentidad, deleteTblTipIdentidad, updateTblTipIdentidad, getTblTipIdentidad} from '../api/Identidad.api';
 import {useNavigate, useParams} from 'react-router-dom';
 import {toast} from 'react-hot-toast';
 
 export function IdentidadFormPage() {
-    const{register, handleSubmit, formState: {errors}, setValue} = 
-    
-    useForm();
+    const {register, handleSubmit, formState: {errors}, setValue} = useForm();
     const navigate = useNavigate();
     const params = useParams(); 
-    console.log(params);
-
+    
     const onSubmit = handleSubmit(async data => {
-        console.log(data)
-        if(params.id) {
-            await updateTblTipIdentidad(params.id, data)
-            toast.success('tipo de identidad actualizada',{
-                position:"bottom-right",
-                style:{
-                    background:"#101010",
-                    color:"#fff",
+        try {
+            if(params.id) {
+                await updateTblTipIdentidad(params.id, data);
+                toast.success('Tipo de identidad actualizado con éxito', {
+                    position: "bottom-right",
+                    style: {
+                        background: "#047857", // Verde oscuro
+                        color: "#fff",
+                    }
+                });
+            } else {
+                await createTblTipIdentidad(data);
+                toast.success('Tipo de identidad creado con éxito', {
+                    position: "bottom-right",
+                    style: {
+                        background: "#047857", // Verde oscuro
+                        color: "#fff",
+                    }
+                });
+            }
+            navigate("/dashboard/Identidad");
+        } catch (error) {
+            toast.error('Error al guardar los datos', {
+                position: "bottom-right",
+                style: {
+                    background: "#DC2626", // Rojo
+                    color: "#fff",
                 }
-            })
-            
-        } else {
-            await createTblTipIdentidad(data);
-            toast.success('tipo de identidad creada exitosamente',{
-                position:"bottom-right",
-                style:{
-                    background:"#101010",
-                    color:"#fff",
-                }
-            })
+            });
         }
-
-        navigate("/Identidad");
-
     });
 
-    useEffect(() =>{
-    async function loadIdentidad() {
-        if (params.id) {
-           const {
-            data: {des_tip_identidad}
-           }= await getTblTipIdentidad(params.id);
-            setValue('des_tip_identidad', des_tip_identidad)
-            
-
-            toast.success('Tipo de identidad actualizada',{
-                position:"bottom-right",
-                style:{
-                    background:"#101010",
-                    color:"#fff",
+    useEffect(() => {
+        async function loadIdentidad() {
+            if (params.id) {
+                try {
+                    const {
+                        data: {tip_identidad, des_tip_identidad}
+                    } = await getTblTipIdentidad(params.id);
+                    
+                    setValue('tip_identidad', tip_identidad);
+                    setValue('des_tip_identidad', des_tip_identidad);
+                    
+                    toast.success('Datos cargados correctamente', {
+                        position: "bottom-right",
+                        style: {
+                            background: "#047857", // Verde oscuro
+                            color: "#fff",
+                        }
+                    });
+                } catch (error) {
+                    toast.error('Error al cargar los datos', {
+                        position: "bottom-right",
+                        style: {
+                            background: "#DC2626", // Rojo
+                            color: "#fff",
+                        }
+                    });
                 }
-            })
+            }
         }
-    }
-    loadIdentidad()
-    },[]) 
+        loadIdentidad();
+    }, [params.id, setValue]);
 
     return (
-        <div className="max-w-xl mx-auto">
-            <form onSubmit={onSubmit}>
-                <input
-                 type="text"
-                 placeholder="des_tip_identidad"
-                 {...register("des_tip_identidad", { required: true })} 
-                 className="bg-zinc-700 p-3 rounded-lg block e-full mb-3"
-                />
-                {errors.codigo_eapb && <span>Este valor es requerido</span>}
+        <div className="bg-white rounded-lg shadow-md p-6 max-w-xl mx-auto">
+            <h1 className="text-2xl font-bold text-gray-800 mb-6">
+                {params.id ? 'Editar Tipo de Identidad' : 'Crear Nuevo Tipo de Identidad'}
+            </h1>
+            
+            <form onSubmit={onSubmit} className="space-y-4">
+                <div>
+                    <label htmlFor="tip_identidad" className="block text-gray-700 font-medium mb-1">Tipo de Identidad</label>
+                    <input
+                        type="text"
+                        id="tip_identidad"
+                        placeholder="Ingrese el código de identidad"
+                        {...register("tip_identidad", { required: "Este campo es requerido" })} 
+                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500"
+                    />
+                    {errors.tip_identidad && (
+                        <p className="text-red-500 text-sm mt-1">{errors.tip_identidad.message || "Este campo es requerido"}</p>
+                    )}
+                </div>
+
+                <div>
+                    <label htmlFor="des_tip_identidad" className="block text-gray-700 font-medium mb-1">Descripción de Identidad</label>
+                    <input
+                        type="text"
+                        id="des_tip_identidad"
+                        placeholder="Ingrese la descripción"
+                        {...register("des_tip_identidad", { required: "Este campo es requerido" })} 
+                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500"
+                    />
+                    {errors.des_tip_identidad && (
+                        <p className="text-red-500 text-sm mt-1">{errors.des_tip_identidad.message || "Este campo es requerido"}</p>
+                    )}
+                </div>
                 
-                <button className="gb-indigo-500 p-3 rounded-lg block w-full mt-3">
-                Guardar</button>
+                <div className="pt-2">
+                    <button 
+                        type="submit" 
+                        className="w-full bg-green-600 hover:bg-green-700 text-white py-2 px-4 rounded-lg transition-colors duration-200 flex items-center justify-center"
+                    >
+                        <svg className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                        </svg>
+                        {params.id ? 'Actualizar' : 'Guardar'}
+                    </button>
+                </div>
             </form>
 
-           
             {params.id && (
-                <div className="flex justify-end">
+                <div className="mt-6">
                     <button
-                        className="bg-red-500 p-3 rounded-lg  w-48 mt-3"
+                        className="w-full bg-red-600 hover:bg-red-700 text-white py-2 px-4 rounded-lg transition-colors duration-200 flex items-center justify-center"
                         onClick={async () => {
-                            const accepted = window.confirm('esta seguo de borrar el registro?');
+                            const accepted = window.confirm('¿Está seguro de eliminar este registro?');
                             if (accepted) {
-                                await deleteTblTipIdentidad(params.id);
-                                toast.success('Tipo de identidad borrado', {
-                                    position: "bottom-right",
-                                    style: {
-                                        background: "#101010",
-                                        color: "#ffff",
-                                    }
-                                })
-
-                                navigate('/TblIdentidad');
+                                try {
+                                    await deleteTblTipIdentidad(params.id);
+                                    toast.success('Tipo de identidad eliminado correctamente', {
+                                        position: "bottom-right",
+                                        style: {
+                                            background: "#047857",
+                                            color: "#fff",
+                                        }
+                                    });
+                                    navigate('/dashboard/Identidad');
+                                } catch (error) {
+                                    toast.error('Error al eliminar', {
+                                        position: "bottom-right",
+                                        style: {
+                                            background: "#DC2626",
+                                            color: "#fff",
+                                        }
+                                    });
+                                }
                             }
                         }}
                     >
-                        Delete
+                        <svg className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v10M9 7h1m-1 4h1m4-4h-1m-1 4h1" />
+                        </svg>
+                        Eliminar
                     </button>
                 </div>
             )}
+
+            <div className="mt-4">
+                <button
+                    className="w-full bg-gray-500 hover:bg-gray-600 text-white py-2 px-4 rounded-lg transition-colors duration-200 flex items-center justify-center"
+                    onClick={() => navigate('/dashboard/Identidad')}
+                >
+                    <svg className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                    </svg>
+                    Volver
+                </button>
+            </div>
         </div>
     );
 }

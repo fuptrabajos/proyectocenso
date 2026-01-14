@@ -1,22 +1,19 @@
-import {useNavigate} from 'react-router-dom'
+import { useNavigate } from 'react-router-dom';
 
-
-export function RegimenCard({TblRegimen}) {
-
-    const navigate = useNavigate()
+export function RegimenCard({ TblRegimen }) {
+    const navigate = useNavigate();
     
     return (
-        <div className='bg-zinc-800 p3 hover:bg-zinc-700
-        hover: cursor-pointer'
-
-        onClick={() =>{
-            navigate(`/Regimen/${TblRegimen.id_regimen}`)
-        }}
+        <div 
+            className="bg-white rounded-lg shadow-md mb-6 overflow-hidden border-t-4 border-green-600 hover:shadow-lg transition-shadow duration-300 cursor-pointer"
+            onClick={() => {
+                navigate(`/dashboard/Regimen/${TblRegimen.id_regimen}`);
+            }}
         >
-        <h1 className='font-bold uppercase'>{TblRegimen.des_regimen}</h1>
-       
-       
-                
-    </div>
-    )
+            {/* Encabezado */}
+            <div className="bg-green-50 p-4">
+                <h1 className="text-lg font-bold text-green-900 uppercase">{TblRegimen.des_regimen}</h1>
+            </div>
+        </div>
+    );
 }

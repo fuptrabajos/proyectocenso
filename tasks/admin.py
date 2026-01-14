@@ -1,6 +1,6 @@
 from django.contrib import admin
 from .models import Task, TblAfiliacion, TblDatPer, TblTiposDeVivienda, TblTiposCultivo, TblNivelAcademico, TblRegimen, TblDisBasuras,TblTiposServiPubli, TblTipIdentidad
-from .models import TblAfiliacion
+from .models import TblAfiliacion ,TblSexo, EncuestaHabitos
 
 
 
@@ -18,6 +18,9 @@ admin .site.register(TblNivelAcademico)
 admin .site.register(TblRegimen)
 admin .site.register(TblDisBasuras)
 admin .site.register(TblTiposServiPubli)
+admin .site.register(TblSexo)
+admin .site.register(EncuestaHabitos)
+
 
 
 

@@ -7,8 +7,8 @@ const IdentidadApi = axios.create({
     export const getAllTblTipIdentidad = () => IdentidadApi.get("/");  
     export const getTblTipIdentidad = (id) => IdentidadApi.get(`/${id}/`);
     export const createTblTipIdentidad = (TblTipIdentidad) => IdentidadApi.post("/",TblTipIdentidad);
-    export const updateTblTipIdentidad = (id_tip_identidad, TblTipIdentidad) => IdentidadApi.put(`/${id_tip_identidad}/`, TblTipIdentidad) 
-    export const deleteTblTipIdentidad = (id_tip_identidad) => IdentidadApi.delete(`/${id_tip_identidad}/`)
+    export const updateTblTipIdentidad = (id_tipo_identidad, TblTipIdentidad) => IdentidadApi.put(`/${id_tipo_identidad}/`, TblTipIdentidad) 
+    export const deleteTblTipIdentidad = (id_tipo_identidad) => IdentidadApi.delete(`/${id_tipo_identidad}/`)
     
 
     
